@@ -780,6 +780,11 @@ def train(forward_step_func, model, optimizer, opt_param_scheduler,
             torch.cuda.cudart().cudaProfilerStart()
             torch.autograd.profiler.emit_nvtx(record_shapes=True).__enter__()
 
+        if args.profile and \
+           iteration <= args.profile_step_end and \
+           iteration >= args.profile_step_start:
+               torch.cuda.nvtx.range_push("iteration{}".format(iteration))
+
         update_num_microbatches(args.consumed_train_samples)
         args.curr_iteration = iteration
         loss_dict, skipped_iter, grad_norm, num_zeros_in_grad = \
@@ -874,6 +879,11 @@ def train(forward_step_func, model, optimizer, opt_param_scheduler,
             exit = True
             break
 
+        if args.profile and \
+           iteration <= args.profile_step_end and \
+           iteration >= args.profile_step_start:
+               torch.cuda.nvtx.range_pop()
+        
         if args.profile and \
            iteration == args.profile_step_end and \
            torch.distributed.get_rank() in args.profile_ranks:
