@@ -2,13 +2,16 @@
 
 # Runs the "345M" parameter model
 
+cd /project_antwerp/gpu_lite
+source ./idlab_scripts/prep_env.sh
+
 export CUDA_DEVICE_MAX_CONNECTIONS=1
 
-CHECKPOINT_PATH=/imec/scratch/dtpatha/patel23/Megatron-LM/checkpoint
-DATASET_PATH=/imec/scratch/dtpatha/patel23/gpt_dataset/download
-
+CHECKPOINT_PATH=/project_antwerp/gpu_lite/checkpoint
+DATASET_PATH=/project_antwerp/gpu_lite/dataset_gpt2
+MEGATRON_PATH=/project_antrwerp/gpu_lite/prj/Megatron-LM
 # AP: CLeaning up previous checkpoint for fresh training
-#rm -r $CHECKPOINT_PATH/*
+rm -r $CHECKPOINT_PATH/*
 
 GPUS_PER_NODE=4
 # Change for multinode config
@@ -105,7 +108,6 @@ OUTPUT_ARGS=(
 
     )
 
-PROFILER=/imec/other/measy/easybuild_common/software/CUDA/11.8.0/bin/nsys
 PROFILER_ARGS=(
     -t cuda,nvtx,cudnn,cublas 
     -s cpu 
@@ -120,20 +122,12 @@ PROFILER_ARGS=(
     -o testProfile 
     )
 
-/imec/other/measy/easybuild_common/software/CUDA/11.8.0/bin/nsys profile ${PROFILER_ARGS[@]} \
-        torchrun ${DISTRIBUTED_ARGS[@]} pretrain_gpt.py \
+nsys profile ${PROFILER_ARGS[@]} \
+        torchrun ${DISTRIBUTED_ARGS[@]} ${MEGATRON_PATH}pretrain_gpt.py \
         ${GPT_MODEL_ARGS[@]} \
         ${TRAINING_ARGS[@]} \
         ${GPT_ARGS_DP[@]} \
         ${DATA_ARGS[@]} \
         ${OUTPUT_ARGS[@]} > $CHECKPOINT_PATH/profile_log.txt
 
-
-#$PROFILER profile ${PROFILER_ARGS[@]} \
-#        torchrun ${DISTRIBUTED_ARGS[@]} pretrain_gpt.py \
-#        ${GPT_MODEL_ARGS[@]} \
-#        ${TRAINING_ARGS[@]} \
-#        ${GPT_ARGS_DP[@]} \
-#        ${DATA_ARGS[@]} \
-#        ${OUTPUT_ARGS[@]} > $CHECKPOINT_PATH/profile_log.txt
 
