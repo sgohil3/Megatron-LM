@@ -5,9 +5,10 @@
 # ./profilingScript.sh DP_PP NumberOfGpus PP_Degree
 # ./profilingScript.sh DP_TP_PP NumberOfGpus TP_Degree PP_Degree
 
-
 # Runs the "345M" parameter model
-source ~/.bashrc
+PRJ_DIR="/project_antwerp/gpu_lite"
+source ${PRJ_DIR}/idlab_scripts/prep_env.sh
+cd ${PRJ_DIR}
 
 PARALLEL_STRAT=$1
 GPUS_PER_NODE=$2
@@ -91,16 +92,12 @@ esac
 echo Parameters to Megatron Model training ${GPT_ARGS_DIST[@]}
 # return 0
 
-PRJ_DIR=/project_antwerp/gpu_lite
-
-cd /project_antwerp/gpu_lite
-source ${PRJ_DIR}/idlab_scripts/prep_env.sh
 
 export CUDA_DEVICE_MAX_CONNECTIONS=1
 
 CHECKPOINT_PATH=${PRJ_DIR}/checkpoint
 DATASET_PATH=${PRJ_DIR}/dataset_gpt2
-MEGATRON_PATH=${PRJ_DIR}/prj/Megatron-LM
+MEGATRON_PATH="${PRJ_DIR}/prj/Megatron-LM"
 
 # AP: CLeaning up previous checkpoint for fresh training
 rm -r $CHECKPOINT_PATH/*
@@ -178,15 +175,30 @@ PROFILER_ARGS=(
 --cuda-memory-usage true 
 --force-overwrite true 
 --nic-metrics true
--o ${PARALLEL_STRAT}_TestProfile 
+-o ${MEGATRON_PATH}/profile_results/${PARALLEL_STRAT}_TestProfile 
 )
 
+echo "Profiler arguments: "
+echo ${PROFILER_ARGS[@]}
+echo "Distributed arguments"
+echo ${DISTRIBUTED_ARGS[@]}
+echo "GPT model arguments"
+echo ${GPT_MODEL_ARGS[@]}
+echo "Training arguments"
+echo ${TRAINING_ARGS[@]}
+echo "Parallel arguments"
+echo ${GPT_ARGS_DIST[@]}
+echo "Dataset arguments"
+echo ${DATA_ARGS[@]}
+echo "Output arguments"
+echo ${OUTPUT_ARGS[@]}
+
 nsys profile ${PROFILER_ARGS[@]} \
-    torchrun ${DISTRIBUTED_ARGS[@]} ${MEGATRON_PATH}pretrain_gpt.py \
+    torchrun ${DISTRIBUTED_ARGS[@]} ${MEGATRON_PATH}/pretrain_gpt.py \
     ${GPT_MODEL_ARGS[@]} \
     ${TRAINING_ARGS[@]} \
     ${GPT_ARGS_DIST[@]} \
     ${DATA_ARGS[@]} \
-    ${OUTPUT_ARGS[@]} > $CHECKPOINT_PATH/profile_log.txt
+    ${OUTPUT_ARGS[@]} > $MEGATRON_PATH/profile_results/${PARALLEL_STRAT}_profile_log.txt
 
 
