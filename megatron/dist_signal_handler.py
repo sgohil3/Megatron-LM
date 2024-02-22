@@ -42,7 +42,9 @@ def all_gather_item(item, dtype, group=None, async_op=False, local_rank=None):
         torch.zeros(1, dtype=tensor.dtype, device=tensor.device)
         for _ in range(group_size)
     ]
+    torch.cuda.nvtx.range_push(f"AP:{tensor.shape}: :dist_signal_handler: all_gather_item")
     torch.distributed.all_gather(output_tensors, tensor, group, async_op)
+    torch.cuda.nvtx.range_pop()
     output = [elem.item() for elem in output_tensors]
     return output
 

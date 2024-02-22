@@ -125,8 +125,10 @@ def pretrain(train_valid_test_dataset_provider,
     start_time_tensor = torch.tensor([_TRAIN_START_TIME],
                                      dtype=torch.double,
                                      device='cuda')
+    torch.cuda.nvtx.range_push(f"AP:{start_time_tensor.shape}: training: pretrain: start_time_tensor")
     torch.distributed.all_reduce(start_time_tensor,
                                  op=torch.distributed.ReduceOp.MIN)
+    torch.cuda.nvtx.range_pop()
     _TRAIN_START_TIME = start_time_tensor.item()
     print_rank_0('time to initialize megatron (seconds): {:.3f}'.format(
         time.time() - _TRAIN_START_TIME))
@@ -858,8 +860,10 @@ def train(forward_step_func, model, optimizer, opt_param_scheduler,
             done_cuda = torch.tensor(
                 [train_time > args.exit_duration_in_mins],
                 dtype=torch.int, device='cuda')
+            torch.cuda.nvtx.range_push(f"AP:{done_cuda.shape}: training: train: done_cuda")
             torch.distributed.all_reduce(
                 done_cuda, op=torch.distributed.ReduceOp.MAX)
+            torch.cuda.nvtx.range_pop()
             done = done_cuda.item()
             if done:
                 if not saved_checkpoint:
@@ -975,8 +979,10 @@ def evaluate(forward_step_func,
                 done_cuda = torch.tensor(
                     [train_time > args.exit_duration_in_mins],
                     dtype=torch.int, device='cuda')
+                torch.cuda.nvtx.range_push(f"AP:{done_cuda.shape}: training: evaluate")
                 torch.distributed.all_reduce(
                     done_cuda, op=torch.distributed.ReduceOp.MAX)
+                torch.cuda.nvtx.range_pop()
                 done = done_cuda.item()
                 if done:
                     print_rank_0('Exiting during evaluation, timelimit reached')
@@ -1137,7 +1143,9 @@ def build_train_valid_test_data_loaders(
     else:
         flags = torch.tensor([0, 0, 0], dtype=torch.long, device='cuda')
 
+    torch.cuda.nvtx.range_push(f"AP:{flags.shape}: :training: build_train_valid_test_data_loaders")
     torch.distributed.broadcast(flags, 0)
+    torch.cuda.nvtx.range_pop()
 
     args.do_train = getattr(args, "do_train", False) or flags[0].item()
     args.do_valid = getattr(args, "do_valid", False) or flags[1].item()

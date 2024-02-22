@@ -124,7 +124,9 @@ class ORQAEvaluator(object):
         
         input_ = torch.empty_like(query_tensor).copy_(query_tensor).detach_()
         tensor_list = [torch.empty_like(input_) for _ in range(device_count)]
+        torch.cuda.nvtx.range_push(f"AP:{query_tensor.shape}: : evaluate_utils: evaluate")
         torch.distributed.all_gather(tensor_list, query_tensor, group=group)
+        torch.cuda.nvtx.range_pop()
 
         if local_rank == 0 and self.mips_index is not None:
             all_query_tensor = torch.cat(tensor_list, dim=0).contiguous()
@@ -141,10 +143,14 @@ class ORQAEvaluator(object):
             topkindex = torch.empty(device_count * len(query_tensor), \
                 args.faiss_topk_retrievals, dtype=torch.int64).cuda()
 
+        torch.cuda.nvtx.range_push(f"AP:{distance.shape}: : evaluate_utils: evaluate")
         torch.distributed.broadcast(distance, src=device_start_rank, \
             group=group)
+        torch.cuda.nvtx.range_pop()
+        torch.cuda.nvtx.range_push(f"AP:{topkindex.shape}: : evaluate_utils: evaluate")
         torch.distributed.broadcast(topkindex, src=device_start_rank, \
             group=group)
+        torch.cuda.nvtx.range_pop()
 
         distance = torch.split(distance, len(query_tensor), dim=0)\
             [local_rank]

@@ -710,12 +710,14 @@ class DistributedOptimizer(MixedPrecisionOptimizer):
                             recv_tensors = None
 
                         # Gather.
+                        torch.cuda.nvtx.range_push(f"AP:{recv_tensors.shape} & {send_tensor.shape}: parallel_data :distrib_optimizer: save_parameter_state")
                         torch.distributed.gather(
                             send_tensor,
                             recv_tensors,
                             data_parallel_global_ranks[0],
                             data_parallel_group_gloo,
                         )
+                        torch.cuda.nvtx.range_pop()
 
                         # Concatenate.
                         if data_parallel_rank == 0:
@@ -797,12 +799,14 @@ class DistributedOptimizer(MixedPrecisionOptimizer):
                             send_tensors = None
 
                         # Scatter.
+                        torch.cuda.nvtx.range_push(f"AP:{recv_tensor.shape} & {send_tensors.shape}: parallel_data :distrib_optimizer: load_parameter_state")
                         torch.distributed.scatter(
                             recv_tensor,
                             send_tensors,
                             data_parallel_global_ranks[0],
                             data_parallel_group_gloo,
                         )
+                        torch.cuda.nvtx.range_pop()
 
                     # Copy local contiguous shards to param/optim shards.
                     for model_param, param_range_map in \

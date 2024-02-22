@@ -74,7 +74,9 @@ def broadcast_from_last_pipeline_stage(size, dtype, tensor=None):
     # Get the group and corresponding source rank.
     src = mpu.get_pipeline_model_parallel_last_rank()
     group = mpu.get_pipeline_model_parallel_group()
+    torch.cuda.nvtx.range_push(f"AP:{tensor.shape}: : communication: broadcast_from_last_pipeline_stage")
     torch.distributed.broadcast(tensor, src, group)
+    torch.cuda.nvtx.range_pop()
 
     return tensor
 
@@ -100,7 +102,9 @@ def broadcast_from_last_to_first_pipeline_stage(size, dtype, tensor=None):
         src = mpu.get_pipeline_model_parallel_last_rank()
         group = mpu.get_embedding_group()
         # Broadcast from last stage into the first stage.
+        torch.cuda.nvtx.range_push(f"AP:{tensor.shape}: : communication: broadcast_from_last_to_first_pipeline_stage")
         torch.distributed.broadcast(tensor, src, group)
+        torch.cuda.nvtx.range_pop()
     else:
         tensor = None
 
@@ -134,7 +138,9 @@ def copy_from_last_to_first_pipeline_stage(size, dtype, tensor=None):
                                       dtype=dtype,
                                       device=torch.cuda.current_device())
         # Broadcast from last stage into the first stage.
+        torch.cuda.nvtx.range_push(f"AP:{tensor_.shape}: : communication: copy_from_last_to_first_pipeline_stage")
         torch.distributed.broadcast(tensor_, src, group)
+        torch.cuda.nvtx.range_pop()
         # Update the first stage tensor
         if is_first_stage and not is_contiguous:
             tensor[...] = tensor_
@@ -152,8 +158,10 @@ def broadcast_tensor(size, dtype, tensor=None, rank=0):
         tensor = torch.empty(size,
                              dtype=dtype,
                              device=torch.cuda.current_device())
-
+    
+    torch.cuda.nvtx.range_push(f"AP:{tensor.shape}: : communication: broadcast_tensor")
     torch.distributed.broadcast(tensor, rank)
+    torch.cuda.nvtx.range_pop()
 
     return tensor
 

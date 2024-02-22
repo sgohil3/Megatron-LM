@@ -214,9 +214,11 @@ class TwoStageDataParallelLoadShardedStrategy(LoadShardedStrategy):
             logger.debug(
                 f'exchange {ten_meta.sharded_tensor_no_data.key}, {exchange_tensor.shape}({exchange_tensor.numel()}), broadcast({src_rank} -> {self.dp_group_ranks})'
             )
+            torch.cuda.nvtx.range_push(f"AP:{exchange_tensor.shape}: :two_stage: _exchange_loaded_tensors")
             torch.distributed.broadcast(
                 exchange_tensor, group=self.data_parallel_group, src=src_rank
             )
+            torch.cuda.nvtx.range_pop()
             self._distribute_data_to_state_dict(ten_meta, exchange_tensor, sharded_state_dict)
             logger.debug(f'exchange {ten_meta.sharded_tensor_no_data.key} done')
 

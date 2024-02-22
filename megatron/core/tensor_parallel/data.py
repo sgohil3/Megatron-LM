@@ -37,9 +37,11 @@ def _build_key_size_numel_dictionaries(keys, data):
 
     # Move to GPU and broadcast.
     sizes_cuda = torch.tensor(sizes, dtype=torch.long, device='cuda')
+    torch.cuda.nvtx.range_push(f"AP:{sizes_cuda.shape}: :data: _build_key_size_numel_discionaries")
     torch.distributed.broadcast(
         sizes_cuda, get_tensor_model_parallel_src_rank(), group=get_tensor_model_parallel_group()
     )
+    torch.cuda.nvtx.range_pop()
 
     # Move back to cpu and unpack.
     sizes_cpu = sizes_cuda.cpu()
@@ -88,9 +90,11 @@ def broadcast_data(keys, data, datatype):
         flatten_data = torch.empty(total_numel, device=torch.cuda.current_device(), dtype=datatype)
 
     # Broadcast
+    torch.cuda.nvtx.range_push(f"AP:{flatten_data.shape}: : data: broadcast_data")
     torch.distributed.broadcast(
         flatten_data, get_tensor_model_parallel_src_rank(), group=get_tensor_model_parallel_group()
     )
+    torch.cuda.nvtx.range_pop()
 
     # Unpack
     output = {}

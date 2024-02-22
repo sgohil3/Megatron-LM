@@ -69,18 +69,22 @@ def compute_feature_bank(model):
 
     feature_banks = [torch.zeros_like(feature_bank)
                      for i in range(mpu.get_data_parallel_world_size())]
+    torch.cuda.nvtx.range_push(f"AP:{feature_bank.shape}: parallel_data :knn_monitor: compute_feature_group")
     torch.distributed.all_gather(feature_banks,
                                  feature_bank,
                                  group=mpu.get_data_parallel_group())
+    torch.cuda.nvtx.range_pop()
 
     assert torch.all(torch.eq(feature_banks[mpu.get_data_parallel_rank()],
                               feature_bank))
 
     feature_labels = [torch.zeros_like(feature_label)
                       for i in range(mpu.get_data_parallel_world_size())]
+    torch.cuda.nvtx.range_push(f"AP:{feature_label.shape}: parallel_data :knn_monitor: compute_feature_bank")
     torch.distributed.all_gather(feature_labels,
                                  feature_label,
                                  group=mpu.get_data_parallel_group())
+    torch.cuda.nvtx.range_pop()
 
     # [D, N]
     feature_banks = torch.cat(feature_banks, dim=0).t().contiguous()
