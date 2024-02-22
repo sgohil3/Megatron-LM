@@ -276,9 +276,11 @@ class MixedPrecisionOptimizer(MegatronOptimizer):
             main_grads, self.found_inf, self.grad_scaler.inv_scale)
 
         # Update across all model parallel instances.
+        torch.cuda.nvtx.range_push(f"AP:{self.found_inf.shape}: parallel_model :optimizer: _unscale_main_grads_and_check_for_nan")
         torch.distributed.all_reduce(self.found_inf,
                                      op=torch.distributed.ReduceOp.MAX,
                                      group=self.get_model_parallel_group())
+        torch.cuda.nvtx.range_pop()
 
         # Check for nan.
         found_inf_flag = (self.found_inf.item() > 0)

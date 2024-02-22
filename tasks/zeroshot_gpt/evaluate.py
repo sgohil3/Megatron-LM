@@ -130,8 +130,10 @@ def evaluate(data_loader, model, eval_metric):
 
             # Reduce across processes.
             if parallel_state.is_pipeline_last_stage():
+                torch.cuda.nvtx.range_push(f"AP:{output.shape}: parallel_data :evaluate: evaluate")
                 torch.distributed.all_reduce(output,
                                              group=parallel_state.get_data_parallel_group())
+                torch.cuda.nvtx.range_pop()
 
                 total_output += output
 

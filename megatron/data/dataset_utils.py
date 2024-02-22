@@ -724,8 +724,12 @@ def get_samples_mapping(indexed_dataset,
     # device_index=rank which is not the case for model
     # parallel case
     counts = torch.tensor([1], dtype=torch.long, device='cuda')
+    torch.cuda.nvtx.range_push(f"AP:{counts.shape}: parallel_data :dataset_utils: get_samples_mapping")
     torch.distributed.all_reduce(counts, group=mpu.get_data_parallel_group())
+    torch.cuda.nvtx.range_pop()
+    torch.cuda.nvtx.range_push(f"AP:{counts.shape}: parallel_pipeline :dataset_utils: get_samples_mapping")
     torch.distributed.all_reduce(counts, group=mpu.get_pipeline_model_parallel_group())
+    torch.cuda.nvtx.range_pop()
     assert counts[0].item() == (
         torch.distributed.get_world_size() //
         torch.distributed.get_world_size(group=mpu.get_tensor_model_parallel_group()))

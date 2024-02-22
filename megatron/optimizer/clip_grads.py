@@ -62,9 +62,11 @@ def clip_grad_norm_fp32(parameters, grads_for_norm,
         total_norm = max(grad.abs().max() for grad in grads_for_norm)
         total_norm_cuda = torch.tensor([float(total_norm)], dtype=torch.float, device='cuda')
         # Take max across all model-parallel GPUs.
+        torch.cuda.nvtx.range_push(f"AP:{total_norm_cuda.shape}: parallel_model :clip_grads: clip_grad_norm_fp32")
         torch.distributed.all_reduce(total_norm_cuda,
                                      op=torch.distributed.ReduceOp.MAX,
                                      group=model_parallel_group)
+        torch.cuda.nvtx.range_pop()
         total_norm = total_norm_cuda[0].item()
 
     else:
@@ -102,9 +104,11 @@ def clip_grad_norm_fp32(parameters, grads_for_norm,
             )
 
         # Sum across all model-parallel GPUs.
+        torch.cuda.nvtx.range_push(f"AP:{total_norm.shape}: parallel_model :clip_grads: clip_grad_norm_fp32")
         torch.distributed.all_reduce(total_norm,
                                      op=torch.distributed.ReduceOp.SUM,
                                      group=model_parallel_group)
+        torch.cuda.nvtx.range_pop()
         total_norm = total_norm.item() ** (1.0 / norm_type)
 
     # Scale.
@@ -139,9 +143,11 @@ def count_zeros_fp32(parameters, model_parallel_group):
             total_num_zeros = num_zeros + total_num_zeros
 
     # Sum across all model-parallel GPUs.
+    torch.cuda.nvtx.range_push(f"AP:{total_num_zeros.shape}: parallel_model :clip_grads: count_zeros_fp32")
     torch.distributed.all_reduce(total_num_zeros,
                                  op=torch.distributed.ReduceOp.SUM,
                                  group=model_parallel_group)
+    torch.cuda.nvtx.range_pop()
 
     total_num_zeros = total_num_zeros.item()
 

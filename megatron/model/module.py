@@ -105,8 +105,10 @@ class MegatronModule(torch.nn.Module):
         # Ensure that first and last stages have the same initial parameter
         # values.
         if mpu.is_rank_in_embedding_group():
+            torch.cuda.nvtx.range_push(f"AP:{self.shared_embedding_or_output_weight().data.shape}: :module: initilize_word_embeddings")
             torch.distributed.all_reduce(self.shared_embedding_or_output_weight().data,
                                          group=mpu.get_embedding_group())
+            torch.cuda.nvtx.range_pop()
 
         # Ensure that encoder(first stage) and decoder(split stage) position
         # embeddings have the same initial parameter values
@@ -116,8 +118,10 @@ class MegatronModule(torch.nn.Module):
             # TODO: Support tokentype embedding.
             self.language_model.embedding.cuda()
             position_embeddings = self.language_model.embedding.position_embeddings
+            torch.cuda.nvtx.range_push(f"AP:{position_embeddings.weight.data.shape}: :module: initilize_word_embeddings")
             torch.distributed.all_reduce(position_embeddings.weight.data,
                                          group=mpu.get_position_embedding_group())
+            torch.cuda.nvtx.range_pop()
 
 
 def conversion_helper(val, conversion):

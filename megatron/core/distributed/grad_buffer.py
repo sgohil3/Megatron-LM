@@ -105,9 +105,11 @@ class Bucket:
                 async_op=self.overlap_grad_reduce,
             )
         else:
+            torch.cuda.nvtx.range_push(f"AP:{self.data.shape}: parallel_data :grad_buffer: start_grad_sync")
             self.communication_handle = torch.distributed.all_reduce(
                 self.data, group=self.data_parallel_group, async_op=self.overlap_grad_reduce
             )
+            torch.cuda.nvtx.range_pop()
         self.communication_issued = True
 
     def finish_grad_sync(self):

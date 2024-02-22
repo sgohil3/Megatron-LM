@@ -117,8 +117,12 @@ class TwoStageDataParallelLoadShardedStrategy(LoadShardedStrategy):
             times_sum = sum(times)
             max_times = torch.tensor([times_sum], device='cuda')
             avg_times = torch.tensor([times_sum], device='cuda')
+            torch.cuda.nvtx.range_push(f"AP:{max_times.shape}: :two_stage: summarize_load_times")
             torch.distributed.all_reduce(max_times, op=torch.distributed.ReduceOp.MAX)
+            torch.cuda.nvtx.range_pop()
+            torch.cuda.nvtx.range_push(f"AP:{avg_times.shape}: :two_stage: summarize_load_times")
             torch.distributed.all_reduce(avg_times, op=torch.distributed.ReduceOp.SUM)
+            torch.cuda.nvtx.range_pop()
             avg_times /= torch.distributed.get_world_size()
             if torch.distributed.get_rank() == 0:
                 logger.info(f'{key}: max {max_times[0]}, avg {avg_times[0]}')

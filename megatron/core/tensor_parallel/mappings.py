@@ -20,7 +20,9 @@ def _reduce(input_):
         return input_
 
     # All-reduce.
+    torch.cuda.nvtx.range_push(f"AP:{input_.shape}: parallel_model :mappings: _reduce")
     torch.distributed.all_reduce(input_, group=get_tensor_model_parallel_group())
+    torch.cuda.nvtx.range_pop()
 
     return input_
 
