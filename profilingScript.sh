@@ -163,6 +163,8 @@ OUTPUT_ARGS=(
 
 )
 
+cDateTime=$( date '+%F_%H:%M:%S' )
+
 PROFILER_ARGS=(
 -t cuda,nvtx,cudnn,cublas,mpi,ucx 
 -s cpu 
@@ -175,7 +177,8 @@ PROFILER_ARGS=(
 --cuda-memory-usage true 
 --force-overwrite true 
 --nic-metrics true
--o ${MEGATRON_PATH}/profile_results/${PARALLEL_STRAT}_TestProfile 
+--export hdf,json
+-o ${MEGATRON_PATH}/profile_results/${cDateTime}_${PARALLEL_STRAT}_TestProfile 
 )
 
 echo "Profiler arguments: "
@@ -199,6 +202,6 @@ nsys profile ${PROFILER_ARGS[@]} \
     ${TRAINING_ARGS[@]} \
     ${GPT_ARGS_DIST[@]} \
     ${DATA_ARGS[@]} \
-    ${OUTPUT_ARGS[@]} > $MEGATRON_PATH/profile_results/${PARALLEL_STRAT}_profile_log.txt
+    ${OUTPUT_ARGS[@]} > $MEGATRON_PATH/profile_results/${cDateTime}_${PARALLEL_STRAT}_profile_log.txt
 
 
