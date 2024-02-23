@@ -13,6 +13,7 @@ cd ${PRJ_DIR}
 PARALLEL_STRAT=$1
 GPUS_PER_NODE=$2
 
+DEGREE_DP=0
 DEGREE_PP=0
 DEGREE_TP=0
 
@@ -23,6 +24,7 @@ case $PARALLEL_STRAT in
 		# data parallel degree is all GPUs
 		)
 		echo DP degree $GPUS_PER_NODE
+		DEGREE_DP=$GPUS_PER_NODE
 		;;
 
 	DP_TP)
@@ -33,6 +35,7 @@ case $PARALLEL_STRAT in
 		)
 		echo DP degree $(($GPUS_PER_NODE/$DEGREE_TP))
 		echo TP degree $DEGREE_TP
+		DEGREE_DP=$(($GPUS_PER_NODE/$DEGREE_TP))
 		;;
 	
 	DP_PP)
@@ -43,6 +46,7 @@ case $PARALLEL_STRAT in
 		)
 		echo DP degree $(($GPUS_PER_NODE/$DEGREE_PP))
 		echo PP degree $DEGREE_PP
+		DEGREE_DP=$(($GPUS_PER_NODE/$DEGREE_PP))
 		;;
 	
 	DP_TP_PP)
@@ -56,6 +60,7 @@ case $PARALLEL_STRAT in
 		echo DP degree $(($GPUS_PER_NODE/($DEGREE_PP*$DEGREE_TP)))
 		echo TP degree $DEGREE_TP
 		echo PP degree $DEGREE_PP
+		DEGREE_DP=$(($GPUS_PER_NODE/($DEGREE_PP*$DEGREE_TP)))
 		;;
 
 	DP_TP_SP)
@@ -67,6 +72,7 @@ case $PARALLEL_STRAT in
 		)
 		echo DP degree $(($GPUS_PER_NODE/$DEGREE_TP))
 		echo TP degree $DEGREE_TP
+		DEGREE_DP=$(($GPUS_PER_NODE/$DEGREE_TP))
 		;;
 	
 	DP_TP_PP_SP)
@@ -81,6 +87,7 @@ case $PARALLEL_STRAT in
 		echo DP degree $(($GPUS_PER_NODE/($DEGREE_PP*$DEGREE_TP)))
 		echo TP degree $DEGREE_TP
 		echo PP degree $DEGREE_PP
+		DEGREE_DP=$(($GPUS_PER_NODE/($DEGREE_PP*$DEGREE_TP)))
 		;;
 
 	*)
@@ -92,6 +99,17 @@ esac
 echo Parameters to Megatron Model training ${GPT_ARGS_DIST[@]}
 # return 0
 
+cDateTime=$( date '+%F_%H%M%S' )
+dir_name="DP_${DEGREE_DP}_1_TP_${DEGREE_TP}_1_PP_${DEGREE_PP}_1"
+profileOutputs="$MEGATRON_PATH/profile_results/${dir_name}/${cDateTime}"
+
+gitst=$( git status )
+echo $dir_name > ${profileOutputs}_profile_log.txt
+echo $profileOutputs >> ${profileOutputs}_profile_log.txt
+echo $gitst >> ${profileOutputs}_profile_log.txt
+
+echo " " >> ${profileOutputs}_profile_log.txt
+echo " " >> ${profileOutputs}_profile_log.txt
 
 export CUDA_DEVICE_MAX_CONNECTIONS=1
 
@@ -163,7 +181,6 @@ OUTPUT_ARGS=(
 
 )
 
-cDateTime=$( date '+%F_%H:%M:%S' )
 
 PROFILER_ARGS=(
 -t cuda,nvtx,cudnn,cublas,mpi,ucx 
@@ -178,7 +195,7 @@ PROFILER_ARGS=(
 --force-overwrite true 
 --nic-metrics true
 --export hdf,json
--o ${MEGATRON_PATH}/profile_results/${cDateTime}_${PARALLEL_STRAT}_TestProfile 
+-o ${profileOutputs} 
 )
 
 echo "Profiler arguments: "
@@ -202,6 +219,6 @@ nsys profile ${PROFILER_ARGS[@]} \
     ${TRAINING_ARGS[@]} \
     ${GPT_ARGS_DIST[@]} \
     ${DATA_ARGS[@]} \
-    ${OUTPUT_ARGS[@]} > $MEGATRON_PATH/profile_results/${cDateTime}_${PARALLEL_STRAT}_profile_log.txt
+    ${OUTPUT_ARGS[@]} >> ${profileOutputs}_profile_log.txt
 
 
