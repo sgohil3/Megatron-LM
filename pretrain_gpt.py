@@ -143,7 +143,7 @@ def loss_func(loss_mask: Tensor, output_tensor: Tensor):
     loss_mask = loss_mask.view(-1).float()
     if args.context_parallel_size > 1:
         loss = torch.cat([torch.sum(losses.view(-1) * loss_mask).view(1), loss_mask.sum().view(1)])
-        torch.cuda.nvtx.range_push(f"AP:{loss.shape}: parallel_context :pretrain_gpt: loss_func")
+        torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{loss.type}:{loss.shape}: parallel_context :pretrain_gpt: loss_func")
         torch.distributed.all_reduce(loss, group=mpu.get_context_parallel_group())
         torch.cuda.nvtx.range_pop()
         loss = loss[0] / loss[1]

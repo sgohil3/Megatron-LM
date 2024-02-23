@@ -78,7 +78,7 @@ class LanguageModule(MegatronModule):
         if torch.distributed.is_initialized():
             if parallel_state.is_rank_in_embedding_group():
                 weight = self.shared_embedding_or_output_weight()
-                torch.cuda.nvtx.range_push(f"AP:{weight.data.shape}: :langurage_module: initilize_last_stage_with_word_embeddings")
+                torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{weight.data.type}:{weight.data.shape}: :langurage_module: initilize_last_stage_with_word_embeddings")
                 torch.distributed.all_reduce(
                     weight.data, group=parallel_state.get_embedding_group()
                 )

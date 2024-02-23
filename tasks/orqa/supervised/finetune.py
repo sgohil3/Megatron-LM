@@ -29,7 +29,7 @@ def check_and_append_tensor_for_gather(group, rank, world_size, input_):
         device=torch.cuda.current_device())
     input_list = [torch.empty_like(first_dim) for _ in range(world_size)]
     input_list[rank].copy_(first_dim)
-    torch.cuda.nvtx.range_push(f"AP:{first_dim.shape}: :finetune: check_and_append_tensor_for_gather")
+    torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{first_dim.type}:{first_dim.shape}: :finetune: check_and_append_tensor_for_gather")
     torch.distributed.all_gather(input_list, first_dim, group=group)
     torch.cuda.nvtx.range_pop()
     all_input_list = torch.cat(input_list, dim=0).contiguous()
@@ -109,7 +109,7 @@ def orqa(Dataset):
                 context_logits).detach_()
             tensor_list = [torch.empty_like(input_) for _ in range(world_size)]
             tensor_list[rank].copy_(input_)
-            torch.cuda.nvtx.range_push(f"AP:{input_.shape}: :finetune: orqa")
+            torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{input_.type}:{input_.shape}: :finetune: orqa")
             torch.distributed.all_gather(tensor_list, input_, group=group)
             torch.cuda.nvtx.range_pop()
 
@@ -126,7 +126,7 @@ def orqa(Dataset):
                 query_logits).detach_()
             tensor_list = [torch.empty_like(input_) for _ in range(world_size)]
             tensor_list[rank].copy_(input_)
-            torch.cuda.nvtx.range_push(f"AP:{input_.shape}: : finetune: cross_entropy_loss_func")
+            torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{input_.type}:{input_.shape}: : finetune: cross_entropy_loss_func")
             torch.distributed.all_gather(tensor_list, input_, group=group)
             torch.cuda.nvtx.range_pop()
 

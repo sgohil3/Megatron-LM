@@ -20,7 +20,7 @@ def _reduce(input_):
         return input_
 
     # All-reduce.
-    torch.cuda.nvtx.range_push(f"AP:{input_.shape}: parallel_model :mappings: _reduce")
+    torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{input_.type}:{input_.shape}: parallel_model :mappings: _reduce")
     torch.distributed.all_reduce(input_, group=get_tensor_model_parallel_group())
     torch.cuda.nvtx.range_pop()
 
@@ -83,7 +83,7 @@ def _gather_along_last_dim(input_):
 
     tensor_list = [torch.empty_like(input_) for _ in range(world_size)]
     tensor_list[rank] = input_
-    torch.cuda.nvtx.range_push(f"AP:{input_.shape}: parallel_tensor_model :mappings: _gather_along_last_dim")
+    torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{input_.type}:{input_.shape}: parallel_tensor_model :mappings: _gather_along_last_dim")
     torch.distributed.all_gather(tensor_list, input_, group=get_tensor_model_parallel_group())
     torch.cuda.nvtx.range_pop()
 

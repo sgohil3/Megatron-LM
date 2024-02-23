@@ -107,7 +107,7 @@ def calculate_correct_answers(model, dataloader, epoch):
     # Reduce.
     if mpu.is_pipeline_last_stage():
         unreduced = torch.cuda.LongTensor([correct, total])
-        torch.cuda.nvtx.range_push(f"AP:{unreduced.shape}: parallel_data :eval_utils: calculate_correct_answers")
+        torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{unreduced.type}:{unreduced.shape}: parallel_data :eval_utils: calculate_correct_answers")
         torch.distributed.all_reduce(unreduced,
                                      group=mpu.get_data_parallel_group())
         torch.cuda.nvtx.range_pop()

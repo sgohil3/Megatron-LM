@@ -148,7 +148,7 @@ def get_missing_blocks_by_rank(workdir, n_samples, block_size,
     # Extend rank's missing blocks (with None) such that all ranks have equal
     # length lists. This allows for easier tracking of global progress.
     n_missing_tensor = torch.tensor([len(rank_missing_blocks)], dtype=torch.long, device='cuda')
-    torch.cuda.nvtx.range_push(f"AP:{n_missing_tensor.shape}: :utils: get_missing_blocks_by_rank")
+    torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{n_missing_tensor.type}:{n_missing_tensor.shape}: :utils: get_missing_blocks_by_rank")
     torch.distributed.all_reduce(n_missing_tensor,
                                  op=torch.distributed.ReduceOp.MAX)
     torch.cuda.nvtx.range_pop()

@@ -117,10 +117,10 @@ class TwoStageDataParallelLoadShardedStrategy(LoadShardedStrategy):
             times_sum = sum(times)
             max_times = torch.tensor([times_sum], device='cuda')
             avg_times = torch.tensor([times_sum], device='cuda')
-            torch.cuda.nvtx.range_push(f"AP:{max_times.shape}: :two_stage: summarize_load_times")
+            torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{max_times.type}:{max_times.shape}: :two_stage: summarize_load_times")
             torch.distributed.all_reduce(max_times, op=torch.distributed.ReduceOp.MAX)
             torch.cuda.nvtx.range_pop()
-            torch.cuda.nvtx.range_push(f"AP:{avg_times.shape}: :two_stage: summarize_load_times")
+            torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{avg_times.type}:{avg_times.shape}: :two_stage: summarize_load_times")
             torch.distributed.all_reduce(avg_times, op=torch.distributed.ReduceOp.SUM)
             torch.cuda.nvtx.range_pop()
             avg_times /= torch.distributed.get_world_size()
@@ -218,7 +218,7 @@ class TwoStageDataParallelLoadShardedStrategy(LoadShardedStrategy):
             logger.debug(
                 f'exchange {ten_meta.sharded_tensor_no_data.key}, {exchange_tensor.shape}({exchange_tensor.numel()}), broadcast({src_rank} -> {self.dp_group_ranks})'
             )
-            torch.cuda.nvtx.range_push(f"AP:{exchange_tensor.shape}: :two_stage: _exchange_loaded_tensors")
+            torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{exchange_tensor.type}:{exchange_tensor.shape}: :two_stage: _exchange_loaded_tensors")
             torch.distributed.broadcast(
                 exchange_tensor, group=self.data_parallel_group, src=src_rank
             )

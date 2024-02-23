@@ -218,7 +218,7 @@ class DistributedDataParallel(MegatronModule):
         Syncs parameters across all DP ranks.
         """
         for param in self.module.parameters():
-            torch.cuda.nvtx.range_push(f"AP:{param.data.shape}: : distributes_data_parallel: broadcast_params")
+            torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{param.data.type}:{param.data.shape}: : distributes_data_parallel: broadcast_params")
             torch.distributed.broadcast(
                 param.data,
                 src=parallel_state.get_data_parallel_src_rank(with_context_parallel=True),

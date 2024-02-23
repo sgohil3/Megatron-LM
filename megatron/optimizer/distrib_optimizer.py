@@ -710,7 +710,7 @@ class DistributedOptimizer(MixedPrecisionOptimizer):
                             recv_tensors = None
 
                         # Gather.
-                        torch.cuda.nvtx.range_push(f"AP:{recv_tensors.shape} & {send_tensor.shape}: parallel_data :distrib_optimizer: save_parameter_state")
+                        torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{recv_tensors.type} & {send_tensor.type}:{recv_tensors.shape} & {send_tensor.shape}: parallel_data :distrib_optimizer: save_parameter_state")
                         torch.distributed.gather(
                             send_tensor,
                             recv_tensors,
@@ -799,7 +799,7 @@ class DistributedOptimizer(MixedPrecisionOptimizer):
                             send_tensors = None
 
                         # Scatter.
-                        torch.cuda.nvtx.range_push(f"AP:{recv_tensor.shape} & {send_tensors.shape}: parallel_data :distrib_optimizer: load_parameter_state")
+                        torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{recv_tensor.type} & {send_tensors.type}:{recv_tensor.shape} & {send_tensors.shape}: parallel_data :distrib_optimizer: load_parameter_state")
                         torch.distributed.scatter(
                             recv_tensor,
                             send_tensors,

@@ -379,7 +379,7 @@ class LinearWithGradAccumulationAndAsyncCommunication(torch.autograd.Function):
 
         if ctx.async_grad_allreduce:
             # Asynchronous all-reduce
-            torch.cuda.nvtx.range_push(f"AP:{grad_input.shape}: parallel_tensor :layers: backward")
+            torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{grad_input.type}:{grad_input.shape}: parallel_tensor :layers: backward")
             handle = torch.distributed.all_reduce(
                 grad_input, group=get_tensor_model_parallel_group(), async_op=True
             )

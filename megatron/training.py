@@ -125,7 +125,7 @@ def pretrain(train_valid_test_dataset_provider,
     start_time_tensor = torch.tensor([_TRAIN_START_TIME],
                                      dtype=torch.double,
                                      device='cuda')
-    torch.cuda.nvtx.range_push(f"AP:{start_time_tensor.shape}: :training: pretrain")
+    torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{start_time_tensor.type}:{start_time_tensor.shape}: :training: pretrain")
     torch.distributed.all_reduce(start_time_tensor,
                                  op=torch.distributed.ReduceOp.MIN)
     torch.cuda.nvtx.range_pop()
@@ -860,7 +860,7 @@ def train(forward_step_func, model, optimizer, opt_param_scheduler,
             done_cuda = torch.tensor(
                 [train_time > args.exit_duration_in_mins],
                 dtype=torch.int, device='cuda')
-            torch.cuda.nvtx.range_push(f"AP:{done_cuda.shape}: :training: train: done_cuda")
+            torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{done_cuda.type}:{done_cuda.shape}: :training: train: done_cuda")
             torch.distributed.all_reduce(
                 done_cuda, op=torch.distributed.ReduceOp.MAX)
             torch.cuda.nvtx.range_pop()
@@ -979,7 +979,7 @@ def evaluate(forward_step_func,
                 done_cuda = torch.tensor(
                     [train_time > args.exit_duration_in_mins],
                     dtype=torch.int, device='cuda')
-                torch.cuda.nvtx.range_push(f"AP:{done_cuda.shape}: :training: evaluate")
+                torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{done_cuda.type}:{done_cuda.shape}: :training: evaluate")
                 torch.distributed.all_reduce(
                     done_cuda, op=torch.distributed.ReduceOp.MAX)
                 torch.cuda.nvtx.range_pop()
@@ -1143,7 +1143,7 @@ def build_train_valid_test_data_loaders(
     else:
         flags = torch.tensor([0, 0, 0], dtype=torch.long, device='cuda')
 
-    torch.cuda.nvtx.range_push(f"AP:{flags.shape}: :training: build_train_valid_test_data_loaders")
+    torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{flags.type}:{flags.shape}: :training: build_train_valid_test_data_loaders")
     torch.distributed.broadcast(flags, 0)
     torch.cuda.nvtx.range_pop()
 

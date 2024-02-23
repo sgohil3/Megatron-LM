@@ -79,19 +79,19 @@ def calc_params_l2_norm(model):
     norm_2 = norm * norm
     if mpu.get_expert_model_parallel_world_size() == 1:
         # Sum across all model-parallel GPUs(tensor + pipeline).
-        torch.cuda.nvtx.range_push(f"AP:{norm_2.shape}: parallel_model :utils: calc_params_l2_norm")
+        torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{norm_2.type}:{norm_2.shape}: parallel_model :utils: calc_params_l2_norm")
         torch.distributed.all_reduce(norm_2,
                                      op=torch.distributed.ReduceOp.SUM,
                                      group=mpu.get_model_parallel_group())
         torch.cuda.nvtx.range_pop()
     else:
         # Sum across tensor, pipeline and expert model-parallel GPUs.
-        torch.cuda.nvtx.range_push(f"AP:{norm_2.shape}: parallel_tensor_expert :utils: calc_params_l2_norm")
+        torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{norm_2.type}:{norm_2.shape}: parallel_tensor_expert :utils: calc_params_l2_norm")
         torch.distributed.all_reduce(norm_2,
                                      op=torch.distributed.ReduceOp.SUM,
                                      group=mpu.get_tensor_and_expert_parallel_group())
         torch.cuda.nvtx.range_pop()
-        torch.cuda.nvtx.range_push(f"AP:{norm_2.shape}: parallel_pipeline_model: utils: calc_params_l2_norm")
+        torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{norm_2.type}:{norm_2.shape}: parallel_pipeline_model: utils: calc_params_l2_norm")
         torch.distributed.all_reduce(norm_2,
                                      op=torch.distributed.ReduceOp.SUM,
                                      group=mpu.get_pipeline_model_parallel_group())
@@ -103,7 +103,7 @@ def average_losses_across_data_parallel_group(losses):
     """Reduce a tensor of losses across all GPUs."""
     averaged_losses = torch.cat(
         [loss.clone().detach().view(1) for loss in losses])
-    torch.cuda.nvtx.range_push(f"AP:{averaged_losses.shape}: parallel_data :utils: average_losses_across_data_parallel_group")
+    torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{averaged_losses.type}:{averaged_losses.shape}: parallel_data :utils: average_losses_across_data_parallel_group")
     torch.distributed.all_reduce(averaged_losses,
                                  group=mpu.get_data_parallel_group())
     torch.cuda.nvtx.range_pop()

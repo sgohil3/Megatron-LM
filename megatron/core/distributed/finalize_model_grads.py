@@ -38,7 +38,7 @@ def _allreduce_word_embedding_grads(model: List[torch.nn.Module], config: Transf
         if model_module.share_embeddings_and_output_weights:
             weight = model_module.shared_embedding_or_output_weight()
             grad = weight.main_grad
-            torch.cuda.nvtx.range_push(f"AP:{grad.shape}: :finalize_model_grads: _allreduce_word_embedding_grads")
+            torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{grad.type}:{grad.shape}: :finalize_model_grads: _allreduce_word_embedding_grads")
             torch.distributed.all_reduce(grad, group=parallel_state.get_embedding_group())
             torch.cuda.nvtx.range_pop()
 
@@ -58,7 +58,7 @@ def _allreduce_position_embedding_grads(model: List[torch.nn.Module], config: Tr
         grad = get_attr_wrapped_model(
             model_module, 'language_model.embedding.position_embeddings.weight.main_grad'
         )
-        torch.cuda.nvtx.range_push(f"AP:{grad.shape}: :finalize_model_grads: _allreduce_position_embedding_grads")
+        torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{grad.type}:{grad.shape}: :finalize_model_grads: _allreduce_position_embedding_grads")
         torch.distributed.all_reduce(grad, group=parallel_state.get_position_embedding_group())
         torch.cuda.nvtx.range_pop()
 
@@ -86,7 +86,7 @@ def _allreduce_layernorm_grads(model: List[torch.nn.Module], config: Transformer
                     grad = param.main_grad
                     grads.append(grad.data)
         coalesced = _flatten_dense_tensors(grads)
-        torch.cuda.nvtx.range_push(f"AP:{coalesced.shape}: parallel_model :finalize_model_grads: _allreduce_layernorm_grads")
+        torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{coalesced.type}:{coalesced.shape}: parallel_model :finalize_model_grads: _allreduce_layernorm_grads")
         torch.distributed.all_reduce(
             coalesced, group=parallel_state.get_tensor_model_parallel_group()
         )
@@ -112,7 +112,7 @@ def _allreduce_expert_grads(model: List[torch.nn.Module], config: TransformerCon
                     grad = param.main_grad
                     grads.append(grad.data)
         coalesced = _flatten_dense_tensors(grads)
-        torch.cuda.nvtx.range_push(f"AP:{coalesced.shape}: parallel_data_expert :finalize_model_grads: _allreduce_expert_grads")
+        torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{coalesced.type}:{coalesced.shape}: parallel_data_expert :finalize_model_grads: _allreduce_expert_grads")
         torch.distributed.all_reduce(
             coalesced, group=parallel_state.get_data_modulo_expert_parallel_group()
         )

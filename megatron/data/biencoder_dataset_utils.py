@@ -189,7 +189,7 @@ def get_block_samples_mapping(block_dataset, title_dataset, data_prefix, num_epo
     # device_index=rank which is not the case for model
     # parallel case
     counts = torch.tensor([1], dtype=torch.long, device='cuda')
-    torch.cuda.nvtx.range_push(f"AP:{counts.shape}: parallel_data :biencoder_dataset_utils: get_block_samples_mapping")
+    torch.cuda.nvtx.range_push(f"AP: {torch.distributed.get_rank()} :{counts.type}:{counts.shape}: parallel_data :biencoder_dataset_utils: get_block_samples_mapping")
     torch.distributed.all_reduce(counts, group=mpu.get_data_parallel_group())
     torch.cuda.nvtx.range_pop()
     assert counts[0].item() == torch.distributed.get_world_size(
