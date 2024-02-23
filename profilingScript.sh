@@ -13,9 +13,9 @@ cd ${PRJ_DIR}
 PARALLEL_STRAT=$1
 GPUS_PER_NODE=$2
 
-DEGREE_DP=0
-DEGREE_PP=0
-DEGREE_TP=0
+DEGREE_DP=1
+DEGREE_PP=1
+DEGREE_TP=1
 
 case $PARALLEL_STRAT in
 	DP)
@@ -97,19 +97,6 @@ case $PARALLEL_STRAT in
 esac
 
 echo Parameters to Megatron Model training ${GPT_ARGS_DIST[@]}
-# return 0
-
-cDateTime=$( date '+%F_%H%M%S' )
-dir_name="DP_${DEGREE_DP}_1_TP_${DEGREE_TP}_1_PP_${DEGREE_PP}_1"
-profileOutputs="$MEGATRON_PATH/profile_results/${dir_name}/${cDateTime}"
-
-gitst=$( git status )
-echo $dir_name > ${profileOutputs}_profile_log.txt
-echo $profileOutputs >> ${profileOutputs}_profile_log.txt
-echo $gitst >> ${profileOutputs}_profile_log.txt
-
-echo " " >> ${profileOutputs}_profile_log.txt
-echo " " >> ${profileOutputs}_profile_log.txt
 
 export CUDA_DEVICE_MAX_CONNECTIONS=1
 
@@ -117,6 +104,21 @@ CHECKPOINT_PATH=${PRJ_DIR}/checkpoint
 DATASET_PATH=${PRJ_DIR}/dataset_gpt2
 MEGATRON_PATH="${PRJ_DIR}/prj/Megatron-LM"
 
+cDateTime=$( date '+%F_%H%M%S' )
+dir_name="DP_${DEGREE_DP}_1_TP_${DEGREE_TP}_1_PP_${DEGREE_PP}_1"
+profileOutputs="$MEGATRON_PATH/profile_results/${dir_name}/${cDateTime}"
+
+mkdir -p $MEGATRON_PATH/profile_results/${dir_name}
+
+cd ${MEGATRON_PATH}
+#gitst=$( git log --pretty=format:'%cd: %H' -n 1 )
+cd ${PRJ_DIR}
+echo $dir_name > ${profileOutputs}_profile_log.txt
+echo $profileOutputs >> ${profileOutputs}_profile_log.txt
+#echo $gitst >> ${profileOutputs}_profile_log.txt
+
+echo " " >> ${profileOutputs}_profile_log.txt
+echo " " >> ${profileOutputs}_profile_log.txt
 # AP: CLeaning up previous checkpoint for fresh training
 rm -r $CHECKPOINT_PATH/*
 
