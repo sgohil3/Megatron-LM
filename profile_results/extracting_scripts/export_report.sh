@@ -1,6 +1,6 @@
 
 #enter the results tab and keep note of where to save our results
-PROF_DIR="/imec/scratch/dtpatha/gohil01/test2/prj/Megatron-LM/profile_results/DP_1_1_TP_1_1_PP_1_1"
+PROF_DIR="path_to_profile_results"
 REPORT_NAME=$1
 #update the variable below to change what to output from the report
 metric_list="gpu__time_duration.sum,gpu__dram_throughput.sum.pct_of_peak_sustained_elapsed,dram__bytes_write.sum.per_second,dram__bytes_read.sum.per_second,dram__bytes_read.sum,dram__bytes_write.sum"

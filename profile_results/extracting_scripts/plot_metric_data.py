@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import mplcursors
 
 #update this for your computer
-RESULTS_DIR = "/imec/scratch/dtpatha/gohil01/test2/prj/Megatron-LM/profile_results/DP_1_1_TP_1_1_PP_1_1/saved_results/" #directory where our results will be located
+RESULTS_DIR = "path_to_results_directory" #directory where our results will be located
 L2_SIZE_MB  = 40
 L1_SIZE_MB  = (192/1024) #nvidia uses base 2
 

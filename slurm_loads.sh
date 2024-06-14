@@ -1,9 +1,9 @@
 # Project paths
-export PRJ_PATH=/imec/scratch/dtpatha/${USER}/Megatron-LM
+export PRJ_PATH= #project path
 # export CONDA_ENV_PATH=Megatron-LM_pyEnv
 export CONDA_ENV_PATH=${PRJ_PATH}/pyEnv
 
-export MOD_PATH=/imec/other/measy/easybuild_common/software
+export MOD_PATH= #path to mods
 
 # Exports for gpgpu-sim
 #export CUDNN_PATH=${MOD_PATH}/cuDNN/8.2.1.32-CUDA-11.3.1
@@ -14,14 +14,13 @@ export MOD_PATH=/imec/other/measy/easybuild_common/software
 #export CUDNN_LIBRARY=${MOD_PATH}/cuDNN/8.2.1.32-CUDA-11.3.1/lib
 
 # Workload paths
-export GPT_DATASET_PATH=/imec/scratch/dtpatha/${USER}/gpt_dataset
+
 
 # Setting up modules
 module purge
 
 export MODULEPATH=""
-source /imec/other/slurm/slurm_conf_22_05/slurm_imec/slurm_init.sh
-source /imec/scratch/dtpatha/projectdata/software/eb_setup/lte_mod_setup.sh
+
 
 module load lang/Miniconda3/4.12
 
@@ -50,7 +49,6 @@ module load lib/libtool/2.4.6-GCCcore-10.3.0
 
 echo "Module loaded..."
 
-source /imec/users/${USER}/.bashrc
 
 export CUDA_INSTALL_PATH=${CUDA_PATH}
 

@@ -1,17 +1,17 @@
-#!/bin/bash
-# To run this script 
-# ./profilingScript.sh DP NumberOfGpus
-# ./profilingScript.sh DP_TP NumberOfGpus TP_Degree
-# ./profilingScript.sh DP_PP NumberOfGpus PP_Degree
-# ./profilingScript.sh DP_TP_PP NumberOfGpus TP_Degree PP_Degree
+# #!/bin/bash
+# # To run this script 
+# # ./profilingScript.sh DP NumberOfGpus
+# # ./profilingScript.sh DP_TP NumberOfGpus TP_Degree
+# # ./profilingScript.sh DP_PP NumberOfGpus PP_Degree
+# # ./profilingScript.sh DP_TP_PP NumberOfGpus TP_Degree PP_Degree
 
-# Runs the "345M" parameter model
-PRJ_DIR="/project_antwerp/gpu_lite"
-source ${PRJ_DIR}/idlab_scripts/prep_env.sh
+# # Runs the "345M" parameter model
+PRJ_DIR="prj_directory_path"
+#source ${PRJ_DIR}/idlab_scripts/prep_env.sh
 cd ${PRJ_DIR}
 
 PARALLEL_STRAT=$1
-GPUS_PER_NODE=$2
+	PUS_PER_NODE=$2  
 
 DEGREE_DP=1
 DEGREE_PP=1
@@ -102,7 +102,7 @@ export CUDA_DEVICE_MAX_CONNECTIONS=1
 
 CHECKPOINT_PATH=${PRJ_DIR}/checkpoint
 DATASET_PATH=${PRJ_DIR}/dataset_gpt2
-MEGATRON_PATH="${PRJ_DIR}/prj/Megatron-LM"
+MEGATRON_PATH="${PRJ_DIR}/Megatron-LM"
 
 cDateTime=$( date '+%F_%H%M%S' )
 dir_name="DP_${DEGREE_DP}_1_TP_${DEGREE_TP}_1_PP_${DEGREE_PP}_1"
@@ -123,7 +123,7 @@ echo " " >> ${profileOutputs}_profile_log.txt
 rm -r $CHECKPOINT_PATH/*
 
 # Change for multinode config
-MASTER_ADDR=localhost
+MASTER_ADDR=localhost #127.0.0.1 #
 MASTER_PORT=6000
 NNODES=1
 NODE_RANK=0
@@ -175,16 +175,47 @@ OUTPUT_ARGS=(
 --log-interval 100 
 --save-interval 10000 
 --eval-interval 1000 
---eval-iters 10
+--eval-iters 2 #change this for batch size
 --save $CHECKPOINT_PATH
---load $CHECKPOINT_PATH
+--load ${CHECKPOINT_PATH}/"empty"
 --profile
---profile-step-start=0
-
+--profile-step-start=9 # use this to control which iteration to profile : use start iteration -> (end iteration + 1)
+--profile-step-end=10 
 )
 
 
-PROFILER_ARGS=(
+
+PROFILER_ARGS_NCU_SINGLE=(
+# ncu arguements for a single GPU
+--set full #profile all sections
+--verbose #add more data to profiler output
+--section WorkloadDistribution
+# --section MemoryWorkloadAnalysis
+--section MemoryWorkloadAnalysis_Chart 
+--section MemoryWorkloadAnalysis_Tables
+--section PmSampling
+--replay-mode application # use application replay mode (range modes not working need to investigate)
+--app-replay-mode strict #all kernels must match, otherwise throw error
+--cache-control none
+--nvtx --nvtx-include "iteration9/"
+# --range-filter :1: #use the first cudaProfilerStart/Stop range for profiling
+# --app-replay-match name # Kernels are matched in the following order: 1. (mangled) name, 2. order of execution
+-o ${profileOutputs}
+)
+
+PROFILER_ARGS_NCU_MULTI=(
+# ncu arguements for multiple GPUS
+--metrics launch__grid_size
+--target-processes all
+--replay-mode app-range #application #range
+--cache-control none
+--nvtx --nvtx-include "iteration9/"
+-o ${profileOutputs}
+# --range-filter :1: #use the first cudaProfilerStart/Stop range for profiling
+)
+
+PROFILER_ARGS_NSYS=(
+# # #Uncomment for nsys
 -t cuda,nvtx,cudnn,cublas,mpi,ucx 
 -s cpu 
 --gpu-metrics-device all 
@@ -215,12 +246,18 @@ echo ${DATA_ARGS[@]}
 echo "Output arguments"
 echo ${OUTPUT_ARGS[@]}
 
-nsys profile ${PROFILER_ARGS[@]} \
+# nsys profile ${PROFILER_ARGS_NSYS[@]} \
+#     torchrun ${DISTRIBUTED_ARGS[@]} ${MEGATRON_PATH}/pretrain_gpt.py \
+#     ${GPT_MODEL_ARGS[@]} \
+#     ${TRAINING_ARGS[@]} \
+#     ${GPT_ARGS_DIST[@]} \
+#     ${DATA_ARGS[@]} \
+#     ${OUTPUT_ARGS[@]} #>> ${profileOutputs}_profile_log.txt
+
+ncu ${PROFILER_ARGS_NCU_MULTI[@]} \
     torchrun ${DISTRIBUTED_ARGS[@]} ${MEGATRON_PATH}/pretrain_gpt.py \
     ${GPT_MODEL_ARGS[@]} \
     ${TRAINING_ARGS[@]} \
     ${GPT_ARGS_DIST[@]} \
     ${DATA_ARGS[@]} \
     ${OUTPUT_ARGS[@]} >> ${profileOutputs}_profile_log.txt
-
-
