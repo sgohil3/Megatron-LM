@@ -460,24 +460,29 @@ def train_step(forward_step_func, data_iterator,
 
     # Empty unused memory.
     if args.empty_unused_memory_level >= 1:
+        # print_datetime("Empty Memomry")
         torch.cuda.empty_cache()
 
     # Vision gradients.
+    # print_datetime("Vision gradients.")
     if args.vision_pretraining and args.vision_pretraining_type == "dino":
         unwrapped_model = unwrap_model(model[0])
         unwrapped_model.cancel_gradients_last_layer(args.curr_iteration)
 
     # Update parameters.
+    # print_datetime("Update parameters.")
     timers('optimizer', log_level=1).start(barrier=args.barrier_with_L1_time)
     update_successful, grad_norm, num_zeros_in_grad = optimizer.step(args, timers)
     timers('optimizer').stop()
 
     # Vision momentum.
+    # print_datetime("Vision momentum.")
     if args.vision_pretraining and args.vision_pretraining_type == "dino":
         unwrapped_model = unwrap_model(model[0])
         unwrapped_model.update_momentum(args.curr_iteration)
 
     # Update learning rate.
+    # print_datetime("Update learning rate.")
     if update_successful:
         increment = get_num_microbatches() * \
                     args.micro_batch_size * \
@@ -486,14 +491,16 @@ def train_step(forward_step_func, data_iterator,
         skipped_iter = 0
     else:
         skipped_iter = 1
-
+        
     # Empty unused memory.
     if args.empty_unused_memory_level >= 2:
+        # print_datetime("Empty Memomry")
         torch.cuda.empty_cache()
 
     if mpu.is_pipeline_last_stage(ignore_virtual=True):
         # Average loss across microbatches.
         loss_reduced = {}
+        # print_datetime("average loss")
         for key in losses_reduced[0]:
             losses_reduced_for_key = [x[key] for x in losses_reduced]
             loss_reduced[key] = sum(losses_reduced_for_key) / len(losses_reduced_for_key)
@@ -777,38 +784,30 @@ def train(forward_step_func, model, optimizer, opt_param_scheduler,
 
     while iteration < args.train_iters:
         print_rank_0("Iteration:" + str(iteration))
-            
+        print_rank_last("Last_RANK_Iteration:" + str(iteration))    
+        
         if args.profile and \
            iteration == args.profile_step_start and \
-           torch.distributed.get_rank() in args.profile_ranks:
-            # torch.cuda.cudart().cudaProfilerStart()
-            torch.autograd.profiler.emit_nvtx(record_shapes=True).__enter__()
+           torch.distributed.get_rank() == 0:
+            print_rank_0("Start Profiling Iteration:" + str(iteration))
+            torch.cuda.cudart().cudaProfilerStart()
+            # torch.autograd.profiler.emit_nvtx(record_shapes=True).__enter__()
 
-        if args.profile and \
-           iteration <= args.profile_step_end and \
-           iteration >= args.profile_step_start:
-               print_rank_0("iteration{}".format(iteration))
-               torch.cuda.nvtx.range_push("iteration{}".format(iteration))
-               
-               
         update_num_microbatches(args.consumed_train_samples)
         args.curr_iteration = iteration
-        print_rank_0("Train_Step")
         loss_dict, skipped_iter, grad_norm, num_zeros_in_grad = \
             train_step(forward_step_func,
                        train_data_iterator,
                        model,
                        optimizer,
                        opt_param_scheduler,
-                       config)
-        print_rank_0("End Train Step")
+                       config)   
         iteration += 1
         args.consumed_train_samples += mpu.get_data_parallel_world_size() * \
                                        args.micro_batch_size * \
-                                       get_num_microbatches()
-
+                                       get_num_microbatches()          
         # Logging.
-        print_rank_0("Logging")
+        # print_rank_0("Logging")
         loss_scale = optimizer.get_loss_scale().item()
         params_norm = None
         if args.log_params_norm:
@@ -820,14 +819,14 @@ def train(forward_step_func, model, optimizer, opt_param_scheduler,
                                           grad_norm, params_norm, num_zeros_in_grad)
 
         # Autoresume
-        print_rank_0("Autoresume")
+        # print_rank_0("Autoresume")
         if args.adlr_autoresume and \
            (iteration % args.adlr_autoresume_interval == 0):
             check_adlr_autoresume_termination(iteration, model, optimizer,
                                               opt_param_scheduler)
 
         # Evaluation
-        print_rank_0("Evaluate")
+        # print_rank_0("Evaluate")
         if args.eval_interval and iteration % args.eval_interval == 0 and \
            args.do_valid:
             timers('interval-time').stop()
@@ -845,7 +844,7 @@ def train(forward_step_func, model, optimizer, opt_param_scheduler,
             timers('interval-time', log_level=0).start(barrier=True)
 
         # Checkpointing
-        print_rank_0("Checkpointing")
+        # print_rank_0("Checkpointing")
         saved_checkpoint = False
         if args.exit_signal_handler:
             signal_handler = get_signal_handler()
@@ -894,16 +893,9 @@ def train(forward_step_func, model, optimizer, opt_param_scheduler,
             break
 
         if args.profile and \
-           iteration <= args.profile_step_end and \
-           iteration >= args.profile_step_start:
-               print_rank_0("Profiling End " + "iteration{}".format(iteration))
-               torch.cuda.nvtx.range_pop()
-        
-        if args.profile and \
-           iteration == args.profile_step_end and \
-           torch.distributed.get_rank() in args.profile_ranks:
-            # torch.cuda.cudart().cudaProfilerStop()
-            print_rank_0("Profiling End")
+           iteration == args.profile_step_end and torch.distributed.get_rank() == 0:
+            torch.cuda.cudart().cudaProfilerStop()
+            print_rank_0("Stop Profiling Iteration:" + str(iteration))
 
         if args.manual_gc:
             if args.manual_gc_interval != 0 and iteration % args.manual_gc_interval == 0:
@@ -1200,4 +1192,3 @@ def build_train_valid_test_data_iterators(
         test_data_iterator = None
 
     return train_data_iterator, valid_data_iterator, test_data_iterator
-

@@ -208,6 +208,7 @@ def train_valid_test_datasets_provider(train_val_test_num_samples):
     Args:
         train_val_test_num_samples : A list containing the number of samples in train test and validation.
     """
+    print_rank_0("start first function")
     args = get_args()
 
     print_rank_0("> building train, validation, and test datasets for GPT ...")
@@ -227,7 +228,7 @@ if __name__ == "__main__":
 
     # Temporary for transition to core datasets
     train_valid_test_datasets_provider.is_distributed = True
-
+    print_rank_0("starting training")
     pretrain(train_valid_test_datasets_provider,
              model_provider,
              ModelType.encoder_or_decoder,

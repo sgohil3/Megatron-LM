@@ -1,17 +1,18 @@
 # #!/bin/bash
 # # To run this script 
-# # ./profilingScript.sh DP NumberOfGpus
-# # ./profilingScript.sh DP_TP NumberOfGpus TP_Degree
-# # ./profilingScript.sh DP_PP NumberOfGpus PP_Degree
-# # ./profilingScript.sh DP_TP_PP NumberOfGpus TP_Degree PP_Degree
+# # ./profilingScript.sh NCU_OR_NSYS DP NumberOfGpus
+# # ./profilingScript.sh NCU_OR_NSYS DP_TP NumberOfGpus TP_Degree
+# # ./profilingScript.sh NCU_OR_NSYS DP_PP NumberOfGpus PP_Degree
+# # ./profilingScript.sh NCU_OR_NSYS DP_TP_PP NumberOfGpus TP_Degree PP_Degree
 
 # # Runs the "345M" parameter model
-PRJ_DIR="prj_directory_path"
-#source ${PRJ_DIR}/idlab_scripts/prep_env.sh
+PRJ_DIR="path_to_project"
 cd ${PRJ_DIR}
 
-PARALLEL_STRAT=$1
-	PUS_PER_NODE=$2  
+PROFILE_MODE=$1
+PARALLEL_STRAT=$2
+GPUS_PER_NODE=$3  
+
 
 DEGREE_DP=1
 DEGREE_PP=1
@@ -29,7 +30,7 @@ case $PARALLEL_STRAT in
 
 	DP_TP)
 		echo "Data and tensor parallel"
-		DEGREE_TP=$3
+		DEGREE_TP=$4
 		GPT_ARGS_DIST=(
 		--tensor-model-parallel-size $DEGREE_TP
 		)
@@ -40,7 +41,7 @@ case $PARALLEL_STRAT in
 	
 	DP_PP)
 		echo "Data and pipeline parallel"
-		DEGREE_PP=$3
+		DEGREE_PP=$4
 		GPT_ARGS_DIST=(
 		--pipeline-model-parallel-size $DEGREE_PP
 		)
@@ -51,8 +52,8 @@ case $PARALLEL_STRAT in
 	
 	DP_TP_PP)
 		echo "Data, tensor and pipeline parallel"
-		DEGREE_TP=$3
-		DEGREE_PP=$4
+		DEGREE_TP=$4
+		DEGREE_PP=$5
 		GPT_ARGS_DIST=(
 		--tensor-model-parallel-size $DEGREE_TP
 		--pipeline-model-parallel-size $DEGREE_PP
@@ -65,7 +66,7 @@ case $PARALLEL_STRAT in
 
 	DP_TP_SP)
 		echo "Data, tensor and sequence parallel"
-		DEGREE_TP=$3
+		DEGREE_TP=$4
 		GPT_ARGS_DIST=(
 		--tensor-model-parallel-size $DEGREE_TP
 		--sequence-parallel
@@ -77,8 +78,8 @@ case $PARALLEL_STRAT in
 	
 	DP_TP_PP_SP)
 		echo "Data, tensor, pipeline and sequence parallel"
-		DEGREE_TP=$3
-		DEGREE_PP=$4
+		DEGREE_TP=$4
+		DEGREE_PP=$5
 		GPT_ARGS_DIST=(
 		--tensor-model-parallel-size $DEGREE_TP
 		--pipeline-model-parallel-size $DEGREE_PP
@@ -102,7 +103,7 @@ export CUDA_DEVICE_MAX_CONNECTIONS=1
 
 CHECKPOINT_PATH=${PRJ_DIR}/checkpoint
 DATASET_PATH=${PRJ_DIR}/dataset_gpt2
-MEGATRON_PATH="${PRJ_DIR}/Megatron-LM"
+MEGATRON_PATH=${PRJ_DIR}/Megatron-LM
 
 cDateTime=$( date '+%F_%H%M%S' )
 dir_name="DP_${DEGREE_DP}_1_TP_${DEGREE_TP}_1_PP_${DEGREE_PP}_1"
@@ -180,38 +181,47 @@ OUTPUT_ARGS=(
 --load ${CHECKPOINT_PATH}/"empty"
 --profile
 --profile-step-start=9 # use this to control which iteration to profile : use start iteration -> (end iteration + 1)
---profile-step-end=10 
+--profile-step-end=10
 )
 
 
 
 PROFILER_ARGS_NCU_SINGLE=(
 # ncu arguements for a single GPU
---set full #profile all sections
 --verbose #add more data to profiler output
+--set full #profile all sections
 --section WorkloadDistribution
-# --section MemoryWorkloadAnalysis
 --section MemoryWorkloadAnalysis_Chart 
 --section MemoryWorkloadAnalysis_Tables
 --section PmSampling
---replay-mode application # use application replay mode (range modes not working need to investigate)
---app-replay-mode strict #all kernels must match, otherwise throw error
+--replay-mode application # use application replay mode (range doesn't work due to unsupported API calls) (app-range doesn't work; don't know why yet)
 --cache-control none
+--clock-control none
 --nvtx --nvtx-include "iteration9/"
-# --range-filter :1: #use the first cudaProfilerStart/Stop range for profiling
 # --app-replay-match name # Kernels are matched in the following order: 1. (mangled) name, 2. order of execution
+# --app-replay-mode strict #all kernels must match, otherwise throw error
 -o ${profileOutputs}
 )
 
 PROFILER_ARGS_NCU_MULTI=(
 # ncu arguements for multiple GPUS
---metrics launch__grid_size
---target-processes all
---replay-mode app-range #application #range
+--verbose #add more data to profiler output
+--nvtx 
+# --set full 
+--section WorkloadDistribution
+--section MemoryWorkloadAnalysis_Chart 
+--section MemoryWorkloadAnalysis_Tables
+--section PmSampling
+--replay-mode application #app-range #application #range
+# --devices 0,1
+# --filter-mode per-gpu
+# --target-processes application-only
 --cache-control none
---nvtx --nvtx-include "iteration9/"
+--clock-control none
+# --kernel-id ::regex:'^(?!ncclKernel)': #profile all kernels except kernel names that start with ncclKernel (Try profiling these with nsys)
+#--nvtx-include "iteration9/"
+--range-filter :1:
 -o ${profileOutputs}
-# --range-filter :1: #use the first cudaProfilerStart/Stop range for profiling
 )
 
 PROFILER_ARGS_NSYS=(
@@ -231,8 +241,6 @@ PROFILER_ARGS_NSYS=(
 -o ${profileOutputs} 
 )
 
-echo "Profiler arguments: "
-echo ${PROFILER_ARGS[@]}
 echo "Distributed arguments"
 echo ${DISTRIBUTED_ARGS[@]}
 echo "GPT model arguments"
@@ -245,19 +253,43 @@ echo "Dataset arguments"
 echo ${DATA_ARGS[@]}
 echo "Output arguments"
 echo ${OUTPUT_ARGS[@]}
+echo "Profiler arguments: "
 
-# nsys profile ${PROFILER_ARGS_NSYS[@]} \
-#     torchrun ${DISTRIBUTED_ARGS[@]} ${MEGATRON_PATH}/pretrain_gpt.py \
-#     ${GPT_MODEL_ARGS[@]} \
-#     ${TRAINING_ARGS[@]} \
-#     ${GPT_ARGS_DIST[@]} \
-#     ${DATA_ARGS[@]} \
-#     ${OUTPUT_ARGS[@]} #>> ${profileOutputs}_profile_log.txt
+case $PROFILE_MODE in 
+	NSYS)
+		echo ${PROFILER_ARGS[@]}
+		echo "Starting nsys profiling"
+		nsys profile ${PROFILER_ARGS_NSYS[@]} \
+			torchrun ${DISTRIBUTED_ARGS[@]} ${MEGATRON_PATH}/pretrain_gpt.py \
+			${GPT_MODEL_ARGS[@]} \
+			${TRAINING_ARGS[@]} \
+			${GPT_ARGS_DIST[@]} \
+			${DATA_ARGS[@]} \
+			${OUTPUT_ARGS[@]} #>> ${profileOutputs}_profile_log.txt
+		;;
 
-ncu ${PROFILER_ARGS_NCU_MULTI[@]} \
-    torchrun ${DISTRIBUTED_ARGS[@]} ${MEGATRON_PATH}/pretrain_gpt.py \
-    ${GPT_MODEL_ARGS[@]} \
-    ${TRAINING_ARGS[@]} \
-    ${GPT_ARGS_DIST[@]} \
-    ${DATA_ARGS[@]} \
-    ${OUTPUT_ARGS[@]} >> ${profileOutputs}_profile_log.txt
+	NCU_SINGLE)
+		echo ${PROFILER_ARGS_NCU_SINGLE[@]}
+		echo "starting NCU single gpu profiling"
+		ncu ${PROFILER_ARGS_NCU_SINGLE[@]} \
+			torchrun ${DISTRIBUTED_ARGS[@]} ${MEGATRON_PATH}/pretrain_gpt.py \
+			${GPT_MODEL_ARGS[@]} \
+			${TRAINING_ARGS[@]} \
+			${GPT_ARGS_DIST[@]} \
+			${DATA_ARGS[@]} \
+			${OUTPUT_ARGS[@]} >> ${profileOutputs}_profile_log.txt		
+		;;
+
+	NCU_MULTI)
+		echo ${PROFILER_ARGS_NCU_MULTI[@]}
+		echo "starting NCU multi gpu profiling"
+		ncu ${PROFILER_ARGS_NCU_MULTI[@]} \
+			torchrun ${DISTRIBUTED_ARGS[@]} ${MEGATRON_PATH}/pretrain_gpt.py \
+			${GPT_MODEL_ARGS[@]} \
+			${TRAINING_ARGS[@]} \
+			${GPT_ARGS_DIST[@]} \
+			${DATA_ARGS[@]} \
+			${OUTPUT_ARGS[@]} #>> ${profileOutputs}_profile_log.txt
+		;;
+	*)
+esac
