@@ -1,0 +1,847 @@
+
+
+dram__bytes                                                                           Counter         byte            # of bytes accessed in DRAM                                           
+.avg.peak_sustained .avg.per_second .max.peak_sustained .max.per_second .min.peak_sustained .min.per_second .sum.peak_sustained .sum.per_second 
+
+dram__bytes_read                                                                      Counter         byte            # of bytes read from DRAM                                             
+.sum .sum.pct_of_peak_sustained_elapsed .sum.per_second 
+
+dram__bytes_write                                                                     Counter         byte            # of bytes written to DRAM                                            
+.sum .sum.pct_of_peak_sustained_elapsed .sum.per_second 
+
+dram__cycles_active                                                                   Counter         cycle           # of cycles where DRAM was active                                     
+.avg .avg.pct_of_peak_sustained_elapsed .max .max.pct_of_peak_sustained_elapsed .min .min.pct_of_peak_sustained_elapsed .sum .sum.pct_of_peak_sustained_elapsed 
+
+dram__cycles_elapsed                                                                  Counter         cycle           # of elapsed DRAM memory clock cycles                                 
+.avg .avg.per_second .max .max.per_second .min .min.per_second .sum .sum.per_second 
+
+dram__sectors_read                                                                    Counter         sector          # of sectors read from DRAM                                           
+.sum 
+
+dram__sectors_write                                                                   Counter         sector          # of sectors written to DRAM                                          
+.sum 
+
+fbpa__dram_sectors                                                                    Counter         sector          # of DRAM sectors accessed                                            
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+gpc__cycles_elapsed                                                                   Counter         cycle           # of cycles elapsed on GPC                                            
+.avg .avg.per_second .max .max.per_second .min .min.per_second .sum .sum.per_second 
+
+gpu__compute_memory_access_throughput                                                 Throughput      %               Compute Memory Pipeline : throughput of internal activity within      
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+gpu__compute_memory_request_throughput                                                Throughput      %               Compute Memory Pipeline : throughput of interconnects between         
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+gpu__compute_memory_throughput                                                        Throughput      %               Compute Memory Pipeline Throughput                                    
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+gpu__dram_throughput                                                                  Throughput      %               GPU DRAM throughput                                                   
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+gpu__time_duration                                                                    Counter         nsecond         equals to gpu__time_duration_measured_user if collectable, otherwise  
+.avg .max .min .sum 
+
+idc__request_cycles_active                                                            Counter         cycle           # of cycles where IDC processed requests from SM                      
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__cycles_active                                                                  Counter         cycle           # of cycles where L1TEX was active                                    
+.avg .max .min .sum 
+
+l1tex__cycles_elapsed                                                                 Counter         cycle           # of cycles elapsed on L1TEX                                          
+.avg .avg.per_second .max .max.per_second .min .min.per_second .sum .sum.per_second 
+
+l1tex__data_bank_conflicts_pipe_lsu_mem_shared                                        Counter                         # of shared memory data bank conflicts generated by LDS, LD, 3D       
+.sum 
+
+l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_atom                                Counter                         # of shared memory data bank conflicts generated by ATOMS, ATOM       
+.sum 
+
+l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld                                  Counter                         # of shared memory data bank conflicts generated by LDS, LD, 3D       
+.sum 
+
+l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_st                                  Counter                         # of shared memory data bank conflicts generated by STS, ST, 3D       
+.sum 
+
+l1tex__data_bank_reads                                                                Counter                         # of data bank reads                                                  
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__data_bank_writes                                                               Counter                         # of data bank writes                                                 
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__data_pipe_lsu_wavefronts                                                       Counter                         # of local/global/shared + surface write wavefronts processed by      
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__data_pipe_lsu_wavefronts_mem_shared                                            Counter                         # of shared memory wavefronts processed by Data-Stage for LDS, LD, 3D 
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__data_pipe_lsu_wavefronts_mem_shared_op_atom                                    Counter                         # of shared memory wavefronts processed by Data-Stage for ATOMS, ATOM 
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__data_pipe_lsu_wavefronts_mem_shared_op_ld                                      Counter                         # of shared memory wavefronts processed by Data-Stage for LDS, LD, 3D 
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__data_pipe_lsu_wavefronts_mem_shared_op_st                                      Counter                         # of shared memory wavefronts processed by Data-Stage for STS, ST, 3D 
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__data_pipe_tex_wavefronts                                                       Counter                         # of texture + surface read wavefronts processed by Data-Stage        
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__f_wavefronts                                                                   Counter                         # of wavefronts processed by L1TEX F-Stage                            
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__lsu_writeback_active                                                           Counter         cycle           # of cycles where local/global/shared writeback interface was active  
+.avg.pct_of_peak_sustained_elapsed .avg.peak_sustained .avg.per_second .max.pct_of_peak_sustained_elapsed .max.peak_sustained .max.per_second .min.pct_of_peak_sustained_elapsed .min.peak_sustained .min.per_second .sum .sum.pct_of_peak_sustained_elapsed .sum.peak_sustained .sum.per_second 
+
+l1tex__lsuin_requests                                                                 Counter         request         # of local/global/shared/attribute instructions sent to LSU           
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__m_l1tex2xbar_req_cycles_active                                                 Counter         cycle           # of cycles where interface from L1TEX M-Stage to XBAR was active     
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__m_l1tex2xbar_write_bytes                                                       Counter         byte            # of bytes written to L2                                              
+.sum .sum.pct_of_peak_sustained_elapsed .sum.per_second 
+
+l1tex__m_l1tex2xbar_write_sectors_mem_global_op_atom                                  Counter         sector          # of sectors written to L2 for global atomics                         
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__m_l1tex2xbar_write_sectors_mem_global_op_red                                   Counter         sector          # of sectors written to L2 for global reductions                      
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__m_l1tex2xbar_write_sectors_mem_lg_op_st                                        Counter         sector          # of sectors written to L2 for local/global stores                    
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__m_l1tex2xbar_write_sectors_mem_surface_op_atom                                 Counter         sector          # of sectors written to L2 for surface atomics                        
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__m_l1tex2xbar_write_sectors_mem_surface_op_red                                  Counter         sector          # of sectors written to L2 for surface reductions                     
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__m_l1tex2xbar_write_sectors_mem_surface_op_st                                   Counter         sector          # of sectors written to L2 for surface stores                         
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__m_xbar2l1tex_read_bytes                                                        Counter         byte            # of bytes read from L2 into L1TEX M-Stage                            
+.sum .sum.pct_of_peak_sustained_elapsed .sum.per_second 
+
+l1tex__m_xbar2l1tex_read_sectors                                                      Counter         sector          # of sectors read from L2 into L1TEX M-Stage                          
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__m_xbar2l1tex_read_sectors_mem_global_op_atom                                   Counter         sector          # of sectors read from L2 into L1TEX M-Stage for global atomics       
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__m_xbar2l1tex_read_sectors_mem_lg_op_ld                                         Counter         sector          # of sectors read from L2 into L1TEX M-Stage for local/global loads   
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__m_xbar2l1tex_read_sectors_mem_surface_op_atom                                  Counter         sector          # of sectors read from L2 into L1TEX M-Stage for surface atomics      
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__m_xbar2l1tex_read_sectors_mem_surface_op_ld                                    Counter         sector          # of sectors read from L2 into L1TEX M-Stage for surface loads        
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__m_xbar2l1tex_read_sectors_mem_texture                                          Counter         sector          # of sectors read from L2 into L1TEX M-Stage for texture              
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_output_wavefronts_pipe_lsu_mem_global_op_atom                                Counter                         # of wavefronts sent to Data-Stage from T-Stage for global atomics    
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_output_wavefronts_pipe_lsu_mem_global_op_ld                                  Counter                         # of wavefronts sent to Data-Stage from T-Stage for global loads      
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_output_wavefronts_pipe_lsu_mem_global_op_red                                 Counter                         # of wavefronts sent to Data-Stage from T-Stage for global reductions 
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_output_wavefronts_pipe_lsu_mem_global_op_st                                  Counter                         # of wavefronts sent to Data-Stage from T-Stage for global stores     
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_output_wavefronts_pipe_lsu_mem_local_op_ld                                   Counter                         # of wavefronts sent to Data-Stage from T-Stage for local loads       
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_output_wavefronts_pipe_lsu_mem_local_op_st                                   Counter                         # of wavefronts sent to Data-Stage from T-Stage for local stores      
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_output_wavefronts_pipe_tex_mem_surface_op_atom                               Counter                         # of wavefronts sent to Data-Stage from T-Stage for surface atomics   
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_output_wavefronts_pipe_tex_mem_surface_op_ld                                 Counter                         # of wavefronts sent to Data-Stage from T-Stage for surface loads     
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_output_wavefronts_pipe_tex_mem_surface_op_red                                Counter                         # of wavefronts sent to Data-Stage from T-Stage for surface reductions
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_output_wavefronts_pipe_tex_mem_surface_op_st                                 Counter                         # of wavefronts sent to Data-Stage from T-Stage for surface stores    
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_output_wavefronts_pipe_tex_mem_texture                                       Counter                         # of wavefronts sent to Data-Stage from T-Stage for texture           
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_requests_pipe_lsu_mem_global_op_atom                                         Counter         request         # of requests sent to T-Stage for global atomics                      
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_requests_pipe_lsu_mem_global_op_ld                                           Counter         request         # of requests sent to T-Stage for global loads                        
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_requests_pipe_lsu_mem_global_op_red                                          Counter         request         # of requests sent to T-Stage for global reductions                   
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_requests_pipe_lsu_mem_global_op_st                                           Counter         request         # of requests sent to T-Stage for global stores                       
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_requests_pipe_lsu_mem_local_op_ld                                            Counter         request         # of requests sent to T-Stage for local loads                         
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_requests_pipe_lsu_mem_local_op_st                                            Counter         request         # of requests sent to T-Stage for local stores                        
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_requests_pipe_tex_mem_surface_op_atom                                        Counter         request         # of requests sent to T-Stage for surface atomics                     
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_requests_pipe_tex_mem_surface_op_ld                                          Counter         request         # of requests sent to T-Stage for surface loads                       
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_requests_pipe_tex_mem_surface_op_red                                         Counter         request         # of requests sent to T-Stage for surface reductions                  
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_requests_pipe_tex_mem_surface_op_st                                          Counter         request         # of requests sent to T-Stage for surface stores                      
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_requests_pipe_tex_mem_texture                                                Counter         request         # of requests sent to T-Stage from the L1TEX X-Stage for textures     
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__t_sector_hit_rate                                                              Ratio                           # of sector hits per sector                                           
+.pct 
+
+l1tex__t_sector_pipe_lsu_mem_global_op_atom_hit_rate                                  Ratio                           # of sector hits for global atomics per sector for global atomics     
+.pct 
+
+l1tex__t_sector_pipe_lsu_mem_global_op_ld_hit_rate                                    Ratio                           # of sector hits for global loads per sector for global loads         
+.pct 
+
+l1tex__t_sector_pipe_lsu_mem_global_op_red_hit_rate                                   Ratio                           # of sector hits for global reductions per sector for global          
+.pct 
+
+l1tex__t_sector_pipe_lsu_mem_global_op_st_hit_rate                                    Ratio                           # of sector hits for global stores per sector for global stores       
+.pct 
+
+l1tex__t_sector_pipe_lsu_mem_local_op_ld_hit_rate                                     Ratio                           # of sector hits for local loads per sector for local loads           
+.pct 
+
+l1tex__t_sector_pipe_lsu_mem_local_op_st_hit_rate                                     Ratio                           # of sector hits for local stores per sector for local stores         
+.pct 
+
+l1tex__t_sector_pipe_tex_mem_surface_op_atom_hit_rate                                 Ratio                           # of sector hits for surface atomics per sector for surface atomics   
+.pct 
+
+l1tex__t_sector_pipe_tex_mem_surface_op_ld_hit_rate                                   Ratio                           # of sector hits for surface loads per sector for surface loads       
+.pct 
+
+l1tex__t_sector_pipe_tex_mem_surface_op_red_hit_rate                                  Ratio                           # of sector hits for surface reductions per sector for surface        
+.pct 
+
+l1tex__t_sector_pipe_tex_mem_surface_op_st_hit_rate                                   Ratio                           # of sector hits for surface stores per sector for surface stores     
+.pct 
+
+l1tex__t_sector_pipe_tex_mem_texture_op_tex_hit_rate                                  Ratio                           # of sector hits for TEX instructions per sector for TEX instructions 
+.pct 
+
+l1tex__t_sectors_pipe_lsu_mem_global_op_atom                                          Counter         sector          # of sectors requested for global atomics                             
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_global_op_atom_lookup_hit                               Counter         sector          # of sector requests to T-Stage with tag-hit and data-hit for global  
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_global_op_atom_lookup_miss                              Counter         sector          # of sector requests to T-Stage that missed for global atomics        
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_global_op_ld                                            Counter         sector          # of sectors requested for global loads                               
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_global_op_ld_lookup_hit                                 Counter         sector          # of sector requests to T-Stage with tag-hit and data-hit for global  
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_global_op_ld_lookup_miss                                Counter         sector          # of sector requests to T-Stage that missed for global loads          
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_global_op_red                                           Counter         sector          # of sectors requested for global reductions                          
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_global_op_red_lookup_hit                                Counter         sector          # of sector requests to T-Stage with tag-hit and data-hit for global  
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_global_op_red_lookup_miss                               Counter         sector          # of sector requests to T-Stage that missed for global reductions     
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_global_op_st                                            Counter         sector          # of sectors requested for global stores                              
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_global_op_st_lookup_hit                                 Counter         sector          # of sector requests to T-Stage with tag-hit and data-hit for global  
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_global_op_st_lookup_miss                                Counter         sector          # of sector requests to T-Stage that missed for global stores         
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_local_op_ld                                             Counter         sector          # of sectors requested for local loads                                
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_local_op_ld_lookup_hit                                  Counter         sector          # of sector requests to T-Stage with tag-hit and data-hit for local   
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_local_op_ld_lookup_miss                                 Counter         sector          # of sector requests to T-Stage that missed for local loads           
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_local_op_st                                             Counter         sector          # of sectors requested for local stores                               
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_local_op_st_lookup_hit                                  Counter         sector          # of sector requests to T-Stage with tag-hit and data-hit for local   
+.sum 
+
+l1tex__t_sectors_pipe_lsu_mem_local_op_st_lookup_miss                                 Counter         sector          # of sector requests to T-Stage that missed for local stores          
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_surface_op_atom                                         Counter         sector          # of sectors requested for surface atomics                            
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_surface_op_atom_lookup_hit                              Counter         sector          # of sector requests to T-Stage with tag-hit and data-hit for surface 
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_surface_op_atom_lookup_miss                             Counter         sector          # of sector requests to T-Stage that missed for surface atomics       
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_surface_op_ld                                           Counter         sector          # of sectors requested for surface loads                              
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_surface_op_ld_lookup_hit                                Counter         sector          # of sector requests to T-Stage with tag-hit and data-hit for surface 
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_surface_op_ld_lookup_miss                               Counter         sector          # of sector requests to T-Stage that missed for surface loads         
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_surface_op_red                                          Counter         sector          # of sectors requested for surface reductions                         
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_surface_op_red_lookup_hit                               Counter         sector          # of sector requests to T-Stage with tag-hit and data-hit for surface 
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_surface_op_red_lookup_miss                              Counter         sector          # of sector requests to T-Stage that missed for surface reductions    
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_surface_op_st                                           Counter         sector          # of sectors requested for surface stores                             
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_surface_op_st_lookup_hit                                Counter         sector          # of sector requests to T-Stage with tag-hit and data-hit for surface 
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_surface_op_st_lookup_miss                               Counter         sector          # of sector requests to T-Stage that missed for surface stores        
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_texture                                                 Counter         sector          # of sectors requested for texture                                    
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_texture_lookup_hit                                      Counter         sector          # of sector requests to T-Stage with tag-hit and data-hit for texture 
+.sum 
+
+l1tex__t_sectors_pipe_tex_mem_texture_lookup_miss                                     Counter         sector          # of sector requests to T-Stage that missed for texture               
+.sum 
+
+l1tex__tex_writeback_active                                                           Counter         cycle           # of cycles where texture/surface writeback interface was active      
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__texin_sm2tex_req_cycles_active                                                 Counter         cycle           # of cycles where interface carrying requests from SM to L1TEX        
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+l1tex__throughput                                                                     Throughput      %               L1TEX Throughput                                                      
+.avg.pct_of_peak_sustained_active .avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_active .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_active .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_elapsed 
+
+lts__cycles_active                                                                    Counter         cycle           # of cycles where LTS was active                                      
+.avg .max .min .sum 
+
+lts__cycles_elapsed                                                                   Counter         cycle           # of cycles elapsed on LTS                                            
+.avg .avg.per_second .max .max.per_second .min .min.per_second .sum .sum.per_second 
+
+lts__d_atomic_input_cycles_active                                                     Counter         cycle           # of cycles where the atomic unit's input was active                  
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+lts__d_sectors                                                                        Counter         sector          # of sectors accessed in data banks                                   
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+lts__d_sectors_fill_device                                                            Counter         sector          # of sectors filled from device memory                                
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+lts__d_sectors_fill_sysmem                                                            Counter         sector          # of sectors filled from system memory                                
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+lts__lts2xbar_cycles_active                                                           Counter         cycle           # of cycles where interface from LTS to XBAR was active               
+.avg.pct_of_peak_sustained_elapsed .avg.peak_sustained .avg.per_second .max.pct_of_peak_sustained_elapsed .max.peak_sustained .max.per_second .min.pct_of_peak_sustained_elapsed .min.peak_sustained .min.per_second .sum.pct_of_peak_sustained_elapsed .sum.peak_sustained .sum.per_second 
+
+lts__t_requests                                                                       Counter         request         # of LTS requests                                                     
+.sum 
+
+lts__t_requests_srcunit_tex                                                           Counter         request         # of LTS requests from unit TEX                                       
+.sum 
+
+lts__t_requests_srcunit_tex_op_atom_dot_alu                                           Counter         request         # of LTS requests from unit TEX for atomic ALU (non-CAS)              
+.sum 
+
+lts__t_requests_srcunit_tex_op_atom_dot_cas                                           Counter         request         # of LTS requests from unit TEX for atomic CAS                        
+.sum 
+
+lts__t_requests_srcunit_tex_op_read                                                   Counter         request         # of LTS requests from unit TEX for reads                             
+.sum 
+
+lts__t_requests_srcunit_tex_op_red                                                    Counter         request         # of LTS requests from unit TEX for reductions                        
+.sum 
+
+lts__t_requests_srcunit_tex_op_write                                                  Counter         request         # of LTS requests from unit TEX for writes                            
+.sum 
+
+lts__t_sector_hit_rate                                                                Ratio                           proportion of L2 sector lookups that hit                              
+.pct 
+
+lts__t_sector_op_read_hit_rate                                                        Ratio                           # of sector hits for _op_read per sector access for _op_read          
+.pct 
+
+lts__t_sector_op_write_hit_rate                                                       Ratio                           # of sector hits for _op_write per sector access for _op_write        
+.pct 
+
+lts__t_sectors                                                                        Counter         sector          # of LTS sectors                                                      
+.avg .avg.pct_of_peak_sustained_elapsed .avg.peak_sustained .avg.per_cycle_elapsed .max .max.pct_of_peak_sustained_elapsed .min .min.pct_of_peak_sustained_elapsed .sum .sum.pct_of_peak_sustained_elapsed .sum.per_second 
+
+lts__t_sectors_aperture_device_lookup_miss                                            Counter         sector          # of LTS sectors accessing device memory (vidmem) that missed         
+.sum 
+
+lts__t_sectors_aperture_peer_lookup_miss                                              Counter         sector          # of LTS sectors accessing peer memory (peermem) that missed          
+.sum 
+
+lts__t_sectors_aperture_sysmem_lookup_miss                                            Counter         sector          # of LTS sectors accessing system memory (sysmem) that missed         
+.sum 
+
+lts__t_sectors_data_ecc                                                               Counter         sector          # of sectors for LTS ECC data                                         
+.avg.pct_of_peak_sustained_elapsed .avg.peak_sustained .avg.per_cycle_elapsed .sum .sum.per_second 
+
+lts__t_sectors_lookup_hit                                                             Counter         sector          # of LTS sectors that hit                                             
+.sum 
+
+lts__t_sectors_lookup_miss                                                            Counter         sector          # of LTS sectors that missed                                          
+.sum 
+
+lts__t_sectors_srcunit_tex                                                            Counter         sector          # of LTS sectors from unit TEX                                        
+.avg.pct_of_peak_sustained_elapsed .avg.peak_sustained .avg.per_cycle_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum .sum.pct_of_peak_sustained_elapsed .sum.per_second 
+
+lts__t_sectors_srcunit_tex_aperture_device_lookup_miss                                Counter         sector          # of LTS sectors from unit TEX accessing device memory (vidmem) that  
+.sum 
+
+lts__t_sectors_srcunit_tex_aperture_device_op_atom_dot_alu_lookup_miss                Counter         sector          # of LTS sectors from unit TEX accessing device memory (vidmem) for   
+.sum 
+
+lts__t_sectors_srcunit_tex_aperture_device_op_atom_dot_cas_lookup_miss                Counter         sector          # of LTS sectors from unit TEX accessing device memory (vidmem) for   
+.sum 
+
+lts__t_sectors_srcunit_tex_aperture_device_op_read_lookup_miss                        Counter         sector          # of LTS sectors from unit TEX accessing device memory (vidmem) for   
+.sum 
+
+lts__t_sectors_srcunit_tex_aperture_device_op_red_lookup_miss                         Counter         sector          # of LTS sectors from unit TEX accessing device memory (vidmem) for   
+.sum 
+
+lts__t_sectors_srcunit_tex_aperture_device_op_write_lookup_miss                       Counter         sector          # of LTS sectors from unit TEX accessing device memory (vidmem) for   
+.sum 
+
+lts__t_sectors_srcunit_tex_aperture_peer_lookup_miss                                  Counter         sector          # of LTS sectors from unit TEX accessing peer memory (peermem) that   
+.avg .max .min .sum 
+
+lts__t_sectors_srcunit_tex_aperture_peer_op_atom_dot_alu_lookup_miss                  Counter         sector          # of LTS sectors from unit TEX accessing peer memory (peermem) for    
+.sum 
+
+lts__t_sectors_srcunit_tex_aperture_peer_op_atom_dot_cas_lookup_miss                  Counter         sector          # of LTS sectors from unit TEX accessing peer memory (peermem) for    
+.sum 
+
+lts__t_sectors_srcunit_tex_aperture_peer_op_read_lookup_miss                          Counter         sector          # of LTS sectors from unit TEX accessing peer memory (peermem) for    
+.sum .sum.pct_of_peak_sustained_elapsed .sum.per_second 
+
+lts__t_sectors_srcunit_tex_aperture_peer_op_red_lookup_miss                           Counter         sector          # of LTS sectors from unit TEX accessing peer memory (peermem) for    
+.sum .sum.pct_of_peak_sustained_elapsed .sum.per_second 
+
+lts__t_sectors_srcunit_tex_aperture_peer_op_write_lookup_miss                         Counter         sector          # of LTS sectors from unit TEX accessing peer memory (peermem) for    
+.sum .sum.pct_of_peak_sustained_elapsed .sum.per_second 
+
+lts__t_sectors_srcunit_tex_aperture_sysmem_lookup_miss                                Counter         sector          # of LTS sectors from unit TEX accessing system memory (sysmem) that  
+.avg .max .min .sum 
+
+lts__t_sectors_srcunit_tex_aperture_sysmem_op_atom_dot_alu_lookup_miss                Counter         sector          # of LTS sectors from unit TEX accessing system memory (sysmem) for   
+.sum 
+
+lts__t_sectors_srcunit_tex_aperture_sysmem_op_atom_dot_cas_lookup_miss                Counter         sector          # of LTS sectors from unit TEX accessing system memory (sysmem) for   
+.sum 
+
+lts__t_sectors_srcunit_tex_aperture_sysmem_op_read_lookup_miss                        Counter         sector          # of LTS sectors from unit TEX accessing system memory (sysmem) for   
+.sum .sum.pct_of_peak_sustained_elapsed .sum.per_second 
+
+lts__t_sectors_srcunit_tex_aperture_sysmem_op_red_lookup_miss                         Counter         sector          # of LTS sectors from unit TEX accessing system memory (sysmem) for   
+.sum .sum.pct_of_peak_sustained_elapsed .sum.per_second 
+
+lts__t_sectors_srcunit_tex_aperture_sysmem_op_write_lookup_miss                       Counter         sector          # of LTS sectors from unit TEX accessing system memory (sysmem) for   
+.sum .sum.pct_of_peak_sustained_elapsed .sum.per_second 
+
+lts__t_sectors_srcunit_tex_lookup_hit                                                 Counter         sector          # of LTS sectors from unit TEX that hit                               
+.sum 
+
+lts__t_sectors_srcunit_tex_lookup_miss                                                Counter         sector          # of LTS sectors from unit TEX that missed                            
+.avg .max .min .sum 
+
+lts__t_sectors_srcunit_tex_op_atom_dot_alu                                            Counter         sector          # of LTS sectors from unit TEX for atomic ALU (non-CAS)               
+.avg.pct_of_peak_sustained_elapsed .avg.peak_sustained .avg.per_cycle_elapsed .sum .sum.per_second 
+
+lts__t_sectors_srcunit_tex_op_atom_dot_alu_lookup_hit                                 Counter         sector          # of LTS sectors from unit TEX for atomic ALU (non-CAS) that hit      
+.sum 
+
+lts__t_sectors_srcunit_tex_op_atom_dot_alu_lookup_miss                                Counter         sector          # of LTS sectors from unit TEX for atomic ALU (non-CAS) that missed   
+.sum 
+
+lts__t_sectors_srcunit_tex_op_atom_dot_cas                                            Counter         sector          # of LTS sectors from unit TEX for atomic CAS                         
+.avg.pct_of_peak_sustained_elapsed .avg.peak_sustained .avg.per_cycle_elapsed .sum .sum.per_second 
+
+lts__t_sectors_srcunit_tex_op_atom_dot_cas_lookup_hit                                 Counter         sector          # of LTS sectors from unit TEX for atomic CAS that hit                
+.sum 
+
+lts__t_sectors_srcunit_tex_op_atom_dot_cas_lookup_miss                                Counter         sector          # of LTS sectors from unit TEX for atomic CAS that missed             
+.sum 
+
+lts__t_sectors_srcunit_tex_op_read                                                    Counter         sector          # of LTS sectors from unit TEX for reads                              
+.avg.pct_of_peak_sustained_elapsed .avg.peak_sustained .avg.per_cycle_elapsed .sum .sum.per_second 
+
+lts__t_sectors_srcunit_tex_op_read_lookup_hit                                         Counter         sector          # of LTS sectors from unit TEX for reads that hit                     
+.sum 
+
+lts__t_sectors_srcunit_tex_op_read_lookup_miss                                        Counter         sector          # of LTS sectors from unit TEX for reads that missed                  
+.sum 
+
+lts__t_sectors_srcunit_tex_op_red                                                     Counter         sector          # of LTS sectors from unit TEX for reductions                         
+.avg.pct_of_peak_sustained_elapsed .avg.peak_sustained .avg.per_cycle_elapsed .sum .sum.per_second 
+
+lts__t_sectors_srcunit_tex_op_red_lookup_hit                                          Counter         sector          # of LTS sectors from unit TEX for reductions that hit                
+.sum 
+
+lts__t_sectors_srcunit_tex_op_red_lookup_miss                                         Counter         sector          # of LTS sectors from unit TEX for reductions that missed             
+.sum 
+
+lts__t_sectors_srcunit_tex_op_write                                                   Counter         sector          # of LTS sectors from unit TEX for writes                             
+.avg.pct_of_peak_sustained_elapsed .avg.peak_sustained .avg.per_cycle_elapsed .sum .sum.per_second 
+
+lts__t_sectors_srcunit_tex_op_write_lookup_hit                                        Counter         sector          # of LTS sectors from unit TEX for writes that hit                    
+.sum 
+
+lts__t_sectors_srcunit_tex_op_write_lookup_miss                                       Counter         sector          # of LTS sectors from unit TEX for writes that missed                 
+.sum 
+
+lts__t_tag_requests                                                                   Counter                         # of tag requests sent to LTS                                         
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+lts__throughput                                                                       Throughput      %               LTS throughput                                                        
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+lts__xbar2lts_cycles_active                                                           Counter         cycle           # of cycles where interface from XBAR to LTS was active               
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+nvlrx__bytes                                                                          Counter         byte            # of bytes of NVLRX data, at 16B granularity                          
+.sum.per_second 
+
+nvltx__bytes                                                                          Counter         byte            # of bytes of NVLTX data, at 16B granularity                          
+.sum.per_second 
+
+pcie__read_bytes                                                                      Counter         byte            # of bytes of PCIe read data, at 512B granularity                     
+.avg.per_second .max.per_second .min.per_second .sum.per_second 
+
+pcie__write_bytes                                                                     Counter         byte            # of bytes of PCIe write data, at 512B granularity                    
+.avg.per_second .max.per_second .min.per_second .sum.per_second 
+
+sm__cycles_active                                                                     Counter         cycle           # of cycles with at least one warp in flight                          
+.avg .max .min .sum 
+
+sm__cycles_elapsed                                                                    Counter         cycle           # of cycles elapsed on SM                                             
+.avg .avg.per_second .max .max.per_second .min .min.per_second .sum .sum.per_second 
+
+sm__inst_executed                                                                     Counter         inst            # of warp instructions executed                                       
+.avg.pct_of_peak_sustained_elapsed .avg.per_cycle_active .avg.per_cycle_elapsed .max.pct_of_peak_sustained_elapsed .max.per_cycle_active .max.per_cycle_elapsed .min.pct_of_peak_sustained_elapsed .min.per_cycle_active .min.per_cycle_elapsed .sum.pct_of_peak_sustained_elapsed .sum.per_cycle_active .sum.per_cycle_elapsed 
+
+sm__inst_executed_pipe_adu                                                            Counter         inst            # of warp instructions executed by adu pipe                           
+.avg.pct_of_peak_sustained_active .avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_active .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_active .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_elapsed 
+
+sm__inst_executed_pipe_alu                                                            Counter         inst            # of warp instructions executed by alu pipe                           
+.avg.pct_of_peak_sustained_active .max.pct_of_peak_sustained_active .min.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_active 
+
+sm__inst_executed_pipe_cbu                                                            Counter         inst            # of warp instructions executed by cbu pipe                           
+.avg.pct_of_peak_sustained_active .max.pct_of_peak_sustained_active .min.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_active 
+
+sm__inst_executed_pipe_cbu_pred_on_any                                                Counter         inst            # of warp instructions executed by cbu pipe with at least 1 thread    
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+sm__inst_executed_pipe_fma                                                            Counter         inst            # of warp instructions executed by fma pipe                           
+.avg.pct_of_peak_sustained_active .max.pct_of_peak_sustained_active .min.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_active 
+
+sm__inst_executed_pipe_fp16                                                           Counter         inst            # of warp instructions executed by fp16 pipe                          
+.avg.pct_of_peak_sustained_active .avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_active .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_active .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_elapsed 
+
+sm__inst_executed_pipe_fp64                                                           Counter         inst            # of warp instructions executed by fp64 pipe                          
+.avg.pct_of_peak_sustained_active .max.pct_of_peak_sustained_active .min.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_active 
+
+sm__inst_executed_pipe_ipa                                                            Counter         inst            # of warp instructions executed by ipa pipe                           
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+sm__inst_executed_pipe_lsu                                                            Counter         inst            # of warp instructions executed by lsu pipe                           
+.avg.pct_of_peak_sustained_active .avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_active .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_active .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_elapsed 
+
+sm__inst_executed_pipe_tensor                                                         Counter         inst            # of warp instructions executed by tensor pipe                        
+.avg.peak_sustained .max.peak_sustained .min.peak_sustained .sum.peak_sustained 
+
+sm__inst_executed_pipe_tensor_op_hmma                                                 Counter         inst            # of warp instructions executed by tensor pipe (HMMA ops)             
+.avg.pct_of_peak_sustained_active .max.pct_of_peak_sustained_active .min.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_active 
+
+sm__inst_executed_pipe_tex                                                            Counter         inst            # of warp instructions executed by tex pipe                           
+.avg.pct_of_peak_sustained_active .avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_active .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_active .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_elapsed 
+
+sm__inst_executed_pipe_xu                                                             Counter         inst            # of warp instructions executed by xu pipe                            
+.avg.pct_of_peak_sustained_active .avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_active .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_active .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_elapsed 
+
+sm__inst_issued                                                                       Counter         inst            # of warp instructions issued                                         
+.avg.pct_of_peak_sustained_active .avg.per_cycle_active .max.pct_of_peak_sustained_active .max.per_cycle_active .min.pct_of_peak_sustained_active .min.per_cycle_active .sum.pct_of_peak_sustained_active .sum.per_cycle_active 
+
+sm__instruction_throughput                                                            Throughput      %               SM core instruction throughput assuming ideal load balancing across   
+.avg.pct_of_peak_sustained_active .max.pct_of_peak_sustained_active .min.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_active 
+
+sm__issue_active                                                                      Counter         cycle           # of cycles where an SMSP issued an instruction                       
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+sm__memory_throughput                                                                 Throughput      %               SM memory instruction throughput assuming ideal load balancing across 
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+sm__mio2rf_writeback_active                                                           Counter         cycle           # of cycles where the MIO to register file writeback interface was    
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+sm__mio_inst_issued                                                                   Counter         inst            # of instructions issued from MIOC to MIO                             
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+sm__mio_pq_read_cycles_active                                                         Counter         cycle           # of cycles where MIOP PQ sent register operands to a pipeline        
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+sm__mio_pq_write_cycles_active                                                        Counter         cycle           # of cycles where register operands from the register file were       
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+sm__pipe_alu_cycles_active                                                            Counter         cycle           # of cycles where alu pipe was active                                 
+.avg.pct_of_peak_sustained_active .avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_active .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_active .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_elapsed 
+
+sm__pipe_fma_cycles_active                                                            Counter         cycle           # of cycles where fma pipe was active                                 
+.avg.pct_of_peak_sustained_active .avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_active .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_active .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_elapsed 
+
+sm__pipe_fp64_cycles_active                                                           Counter         cycle           # of cycles where fp64 pipe was active                                
+.avg.pct_of_peak_sustained_active .avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_active .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_active .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_elapsed 
+
+sm__pipe_shared_cycles_active                                                         Counter         cycle           # of cycles where shared pipe (fp64+fp16+tensor) was active           
+.avg.pct_of_peak_sustained_active .avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_active .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_active .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_elapsed 
+
+sm__pipe_tensor_cycles_active                                                         Counter         cycle           # of cycles where tensor pipe was active                              
+.avg.pct_of_peak_sustained_active .avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_active .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_active .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_elapsed 
+
+sm__pipe_tensor_op_hmma_cycles_active                                                 Counter         cycle           # of cycles where tensor pipe was active (HMMA ops)                   
+.avg.pct_of_peak_sustained_active .max.pct_of_peak_sustained_active .min.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_active 
+
+sm__sass_thread_inst_executed_op_dfma_pred_on                                         Counter         inst            # of DFMA thread instructions executed where all predicates were true 
+.avg.peak_sustained .max.peak_sustained .min.peak_sustained .sum.peak_sustained 
+
+sm__sass_thread_inst_executed_op_ffma_pred_on                                         Counter         inst            # of FFMA thread instructions executed where all predicates were true 
+.avg.peak_sustained .max.peak_sustained .min.peak_sustained .sum.peak_sustained 
+
+sm__sass_thread_inst_executed_op_hfma_pred_on                                         Counter         inst            # of HFMA thread instructions executed where all predicates were true 
+.avg.peak_sustained .max.peak_sustained .min.peak_sustained .sum.peak_sustained 
+
+sm__throughput                                                                        Throughput      %               SM throughput assuming ideal load balancing across SMSPs              
+.avg.pct_of_peak_sustained_elapsed .max.pct_of_peak_sustained_elapsed .min.pct_of_peak_sustained_elapsed .sum.pct_of_peak_sustained_elapsed 
+
+sm__warps_active                                                                      Counter         warp            cumulative # of warps in flight                                       
+.avg.pct_of_peak_sustained_active .avg.per_cycle_active .max.pct_of_peak_sustained_active .max.per_cycle_active .min.pct_of_peak_sustained_active .min.per_cycle_active .sum.pct_of_peak_sustained_active .sum.per_cycle_active 
+
+smsp__average_warp_latency_per_inst_issued                                            Ratio           cycle           average # of cycles each warp was resident per instruction issued     
+.ratio 
+
+smsp__average_warps_active_per_inst_executed                                          Ratio           cycle           average # of cycles each warp was resident per instruction executed   
+.ratio 
+
+smsp__average_warps_issue_stalled_barrier_per_issue_active                            Ratio           inst            average # of warps resident per issue cycle, waiting for sibling      
+.ratio 
+
+smsp__average_warps_issue_stalled_branch_resolving_per_issue_active                   Ratio           inst            average # of warps resident per issue cycle, waiting for a branch     
+.ratio 
+
+smsp__average_warps_issue_stalled_dispatch_stall_per_issue_active                     Ratio           inst            average # of warps resident per issue cycle, waiting on a dispatch    
+.ratio 
+
+smsp__average_warps_issue_stalled_drain_per_issue_active                              Ratio           inst            average # of warps resident per issue cycle, waiting after EXIT for   
+.ratio 
+
+smsp__average_warps_issue_stalled_imc_miss_per_issue_active                           Ratio           inst            average # of warps resident per issue cycle, waiting for an immediate 
+.ratio 
+
+smsp__average_warps_issue_stalled_lg_throttle_per_issue_active                        Ratio           inst            average # of warps resident per issue cycle, waiting for a free entry 
+.ratio 
+
+smsp__average_warps_issue_stalled_long_scoreboard_per_issue_active                    Ratio           inst            average # of warps resident per issue cycle, waiting for a scoreboard 
+.ratio 
+
+smsp__average_warps_issue_stalled_math_pipe_throttle_per_issue_active                 Ratio           inst            average # of warps resident per issue cycle, waiting for an execution 
+.ratio 
+
+smsp__average_warps_issue_stalled_membar_per_issue_active                             Ratio           inst            average # of warps resident per issue cycle, waiting on a memory      
+.ratio 
+
+smsp__average_warps_issue_stalled_mio_throttle_per_issue_active                       Ratio           inst            average # of warps resident per issue cycle, waiting for a free entry 
+.ratio 
+
+smsp__average_warps_issue_stalled_misc_per_issue_active                               Ratio           inst            average # of warps resident per issue cycle, waiting on a             
+.ratio 
+
+smsp__average_warps_issue_stalled_no_instruction_per_issue_active                     Ratio           inst            average # of warps resident per issue cycle, waiting to be selected   
+.ratio 
+
+smsp__average_warps_issue_stalled_not_selected_per_issue_active                       Ratio           inst            average # of warps resident per issue cycle, waiting for the          
+.ratio 
+
+smsp__average_warps_issue_stalled_selected_per_issue_active                           Ratio           inst            average # of warps resident per issue cycle, selected by the          
+.ratio 
+
+smsp__average_warps_issue_stalled_short_scoreboard_per_issue_active                   Ratio           inst            average # of warps resident per issue cycle, waiting for a scoreboard 
+.ratio 
+
+smsp__average_warps_issue_stalled_sleeping_per_issue_active                           Ratio           inst            average # of warps resident per issue cycle, waiting for a nanosleep  
+.ratio 
+
+smsp__average_warps_issue_stalled_tex_throttle_per_issue_active                       Ratio           inst            average # of warps resident per issue cycle, waiting for a free entry 
+.ratio 
+
+smsp__average_warps_issue_stalled_wait_per_issue_active                               Ratio           inst            average # of warps resident per issue cycle, waiting on a fixed       
+.ratio 
+
+smsp__cycles_active                                                                   Counter         cycle           # of cycles with at least one warp in flight                          
+.avg .max .min .sum 
+
+smsp__cycles_elapsed                                                                  Counter         cycle           # of cycles elapsed on SMSP                                           
+.avg .avg.per_second .max .max.per_second .min .min.per_second .sum .sum.per_second 
+
+smsp__inst_executed                                                                   Counter         inst            # of warp instructions executed                                       
+.avg .max .min .sum 
+
+smsp__inst_executed_op_branch                                                         Counter         inst            # of warp instructions executed: by cbu pipe except BMOV, BSSY        
+.avg .max .min .sum 
+
+smsp__inst_executed_op_generic_atom_dot_alu                                           Counter         inst            # of warp instructions executed: ATOM.ALU, ATOMG.ALU (non-CAS)        
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+smsp__inst_executed_op_generic_atom_dot_cas                                           Counter         inst            # of warp instructions executed: ATOM.CAS, ATOMG.CAS                  
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+smsp__inst_executed_op_global_red                                                     Counter         inst            # of warp instructions executed: RED                                  
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+smsp__inst_executed_op_shared_atom                                                    Counter         inst            # of warp instructions executed: ATOMS.*                              
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+smsp__inst_executed_op_surface_atom_dot_alu                                           Counter         inst            # of warp instructions executed: SUATOM.ALU (non-CAS)                 
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+smsp__inst_executed_op_surface_atom_dot_cas                                           Counter         inst            # of warp instructions executed: SUATOM.CAS                           
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+smsp__inst_executed_op_surface_ld                                                     Counter         inst            # of warp instructions executed: SULD                                 
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+smsp__inst_executed_op_surface_red                                                    Counter         inst            # of warp instructions executed: SURED                                
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+smsp__inst_executed_op_surface_st                                                     Counter         inst            # of warp instructions executed: SUST                                 
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+smsp__inst_executed_op_texture                                                        Counter         inst            # of warp instructions executed: texture                              
+.sum .sum.pct_of_peak_sustained_elapsed 
+
+smsp__inst_executed_pipe_tensor                                                       Counter         inst            # of warp instructions executed by tensor pipe                        
+.avg.per_cycle_elapsed .max.per_cycle_elapsed .min.per_cycle_elapsed .sum.per_cycle_elapsed 
+
+smsp__inst_issued                                                                     Counter         inst            # of warp instructions issued                                         
+.avg .max .min .sum 
+
+smsp__issue_active                                                                    Counter         cycle           # of cycles where 1 instruction was issued                            
+.avg.pct_of_peak_sustained_active .avg.per_cycle_active .max.pct_of_peak_sustained_active .max.per_cycle_active .min.pct_of_peak_sustained_active .min.per_cycle_active .sum.pct_of_peak_sustained_active .sum.per_cycle_active 
+
+smsp__issue_inst0                                                                     Counter         cycle           # of active cycles where 0 instructions were issued                   
+.avg.pct_of_peak_sustained_active .max.pct_of_peak_sustained_active .min.pct_of_peak_sustained_active .sum.pct_of_peak_sustained_active 
+
+smsp__sass_average_branch_targets_threads_uniform                                     Ratio                           proportion of branch targets where all active threads selected the    
+.pct 
+
+smsp__sass_average_data_bytes_per_sector_mem_global_op_ld                             Ratio           byte/sector     average # of bytes per sector by global loads                         
+.max_rate .ratio 
+
+smsp__sass_average_data_bytes_per_sector_mem_global_op_st                             Ratio           byte/sector     average # of bytes per sector by global stores                        
+.max_rate .ratio 
+
+smsp__sass_average_data_bytes_per_sector_mem_local_op_ld                              Ratio           byte/sector     average # of bytes per sector by local loads                          
+.max_rate .ratio 
+
+smsp__sass_average_data_bytes_per_sector_mem_local_op_st                              Ratio           byte/sector     average # of bytes per sector by local stores                         
+.max_rate .ratio 
+
+smsp__sass_branch_targets_threads_divergent                                           Counter                         incremented only when there are two or more active threads with       
+.avg .max .min .sum 
+
+smsp__sass_inst_executed_op_global_ld                                                 Counter         inst            # of warp instructions executed: LDG, LD                              
+.sum 
+
+smsp__sass_inst_executed_op_global_st                                                 Counter         inst            # of warp instructions executed: STG, ST                              
+.sum 
+
+smsp__sass_inst_executed_op_local_ld                                                  Counter         inst            # of warp instructions executed: LDL, LD                              
+.sum 
+
+smsp__sass_inst_executed_op_local_st                                                  Counter         inst            # of warp instructions executed: STL, ST                              
+.sum 
+
+smsp__sass_inst_executed_op_shared_ld                                                 Counter         inst            # of warp instructions executed: LDS, LD                              
+.sum 
+
+smsp__sass_inst_executed_op_shared_st                                                 Counter         inst            # of warp instructions executed: STS, ST                              
+.sum 
+
+smsp__sass_thread_inst_executed_op_dadd_pred_on                                       Counter         inst            # of DADD thread instructions executed where all predicates were true 
+.avg.per_cycle_elapsed .max.per_cycle_elapsed .min.per_cycle_elapsed .sum.per_cycle_elapsed 
+
+smsp__sass_thread_inst_executed_op_dfma_pred_on                                       Counter         inst            # of DFMA thread instructions executed where all predicates were true 
+.avg.per_cycle_elapsed .max.per_cycle_elapsed .min.per_cycle_elapsed .sum.per_cycle_elapsed 
+
+smsp__sass_thread_inst_executed_op_dmul_pred_on                                       Counter         inst            # of DMUL thread instructions executed where all predicates were true 
+.avg.per_cycle_elapsed .max.per_cycle_elapsed .min.per_cycle_elapsed .sum.per_cycle_elapsed 
+
+smsp__sass_thread_inst_executed_op_fadd_pred_on                                       Counter         inst            # of FADD thread instructions executed where all predicates were true 
+.avg.per_cycle_elapsed .max.per_cycle_elapsed .min.per_cycle_elapsed .sum.per_cycle_elapsed 
+
+smsp__sass_thread_inst_executed_op_ffma_pred_on                                       Counter         inst            # of FFMA thread instructions executed where all predicates were true 
+.avg.per_cycle_elapsed .max.per_cycle_elapsed .min.per_cycle_elapsed .sum.per_cycle_elapsed 
+
+smsp__sass_thread_inst_executed_op_fmul_pred_on                                       Counter         inst            # of FMUL thread instructions executed where all predicates were true 
+.avg.per_cycle_elapsed .max.per_cycle_elapsed .min.per_cycle_elapsed .sum.per_cycle_elapsed 
+
+smsp__sass_thread_inst_executed_op_hadd_pred_on                                       Counter         inst            # of HADD thread instructions executed where all predicates were true 
+.avg.per_cycle_elapsed .max.per_cycle_elapsed .min.per_cycle_elapsed .sum.per_cycle_elapsed 
+
+smsp__sass_thread_inst_executed_op_hfma_pred_on                                       Counter         inst            # of HFMA thread instructions executed where all predicates were true 
+.avg.per_cycle_elapsed .max.per_cycle_elapsed .min.per_cycle_elapsed .sum.per_cycle_elapsed 
+
+smsp__sass_thread_inst_executed_op_hmul_pred_on                                       Counter         inst            # of HMUL thread instructions executed where all predicates were true 
+.avg.per_cycle_elapsed .max.per_cycle_elapsed .min.per_cycle_elapsed .sum.per_cycle_elapsed 
+
+smsp__thread_inst_executed_per_inst_executed                                          Ratio                           average # of active threads per instruction executed                  
+.ratio 
+
+smsp__thread_inst_executed_pred_on_per_inst_executed                                  Ratio                           average # of active predicated-on threads per instruction executed    
+.ratio 
+
+smsp__warps_active                                                                    Counter         warp            cumulative # of active warps                                          
+.avg.peak_sustained .avg.per_cycle_active .max.peak_sustained .max.per_cycle_active .min.peak_sustained .min.per_cycle_active .sum.peak_sustained .sum.per_cycle_active 
+
+smsp__warps_eligible                                                                  Counter         warp            cumulative # of warps eligible to issue an instruction                
+.avg.per_cycle_active .max.per_cycle_active .min.per_cycle_active .sum.per_cycle_active 
