@@ -7,7 +7,7 @@
 # # example: ./profilingScript.sh NCU_MULTI DP_TP_PP 4 2 2 0
 
 # # Runs the "345M" parameter model
-PRJ_DIR="/imec/scratch/dtpatha/gohil01/test2/prj"
+PRJ_DIR="gohil01/test2/prj"
 cd ${PRJ_DIR}
 export NCCL_DEBUG=INFO
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK

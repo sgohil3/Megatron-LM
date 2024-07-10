@@ -147,4 +147,3 @@ dependencies:
     - wrapt==1.16.0
     - zarr==2.16.1
     - zipp==3.19.0
-prefix: /imec/scratch/dtpatha/gohil01/tools/conda/envs/ncu_Megatron
