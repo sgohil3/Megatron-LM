@@ -1,9 +1,9 @@
 # Project paths
-export PRJ_PATH= #project path
+export PRJ_PATH=#project path
 # export CONDA_ENV_PATH=Megatron-LM_pyEnv
 export CONDA_ENV_PATH=${PRJ_PATH}/pyEnv
 
-export MOD_PATH= #path to mods
+export MOD_PATH=#path to mods
 
 # Exports for gpgpu-sim
 #export CUDNN_PATH=${MOD_PATH}/cuDNN/8.2.1.32-CUDA-11.3.1

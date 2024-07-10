@@ -1,18 +1,22 @@
 # #!/bin/bash
 # # To run this script 
-# # ./profilingScript.sh NCU_OR_NSYS DP NumberOfGpus
-# # ./profilingScript.sh NCU_OR_NSYS DP_TP NumberOfGpus TP_Degree
-# # ./profilingScript.sh NCU_OR_NSYS DP_PP NumberOfGpus PP_Degree
-# # ./profilingScript.sh NCU_OR_NSYS DP_TP_PP NumberOfGpus TP_Degree PP_Degree
+# # ./profilingScript.sh NCU_OR_NSYS DP NumberOfGpus ITERATION_START
+# # ./profilingScript.sh NCU_OR_NSYS DP_TP NumberOfGpus TP_Degree ITERATION_START
+# # ./profilingScript.sh NCU_OR_NSYS DP_PP NumberOfGpus PP_Degree ITERATION_START
+# # ./profilingScript.sh NCU_OR_NSYS DP_TP_PP NumberOfGpus TP_Degree PP_Degree ITERATION_START
+# # example: ./profilingScript.sh NCU_MULTI DP_TP_PP 4 2 2 0
 
 # # Runs the "345M" parameter model
-PRJ_DIR="path_to_project"
+PRJ_DIR="/imec/scratch/dtpatha/gohil01/test2/prj"
 cd ${PRJ_DIR}
+export NCCL_DEBUG=INFO
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
+LAUNCH_COUNT=340 #change this number to alter how many kernels are altered per script execution with NCU_MULTI
 PROFILE_MODE=$1
 PARALLEL_STRAT=$2
 GPUS_PER_NODE=$3  
-
+ITERATION_COUNT=$4
 
 DEGREE_DP=1
 DEGREE_PP=1
@@ -31,6 +35,7 @@ case $PARALLEL_STRAT in
 	DP_TP)
 		echo "Data and tensor parallel"
 		DEGREE_TP=$4
+		ITERATION_COUNT=$5
 		GPT_ARGS_DIST=(
 		--tensor-model-parallel-size $DEGREE_TP
 		)
@@ -42,6 +47,7 @@ case $PARALLEL_STRAT in
 	DP_PP)
 		echo "Data and pipeline parallel"
 		DEGREE_PP=$4
+		ITERATION_COUNT=$5
 		GPT_ARGS_DIST=(
 		--pipeline-model-parallel-size $DEGREE_PP
 		)
@@ -54,6 +60,7 @@ case $PARALLEL_STRAT in
 		echo "Data, tensor and pipeline parallel"
 		DEGREE_TP=$4
 		DEGREE_PP=$5
+		ITERATION_COUNT=$6
 		GPT_ARGS_DIST=(
 		--tensor-model-parallel-size $DEGREE_TP
 		--pipeline-model-parallel-size $DEGREE_PP
@@ -67,6 +74,7 @@ case $PARALLEL_STRAT in
 	DP_TP_SP)
 		echo "Data, tensor and sequence parallel"
 		DEGREE_TP=$4
+		ITERATION_COUNT=$5
 		GPT_ARGS_DIST=(
 		--tensor-model-parallel-size $DEGREE_TP
 		--sequence-parallel
@@ -80,6 +88,7 @@ case $PARALLEL_STRAT in
 		echo "Data, tensor, pipeline and sequence parallel"
 		DEGREE_TP=$4
 		DEGREE_PP=$5
+		ITERATION_COUNT=$6
 		GPT_ARGS_DIST=(
 		--tensor-model-parallel-size $DEGREE_TP
 		--pipeline-model-parallel-size $DEGREE_PP
@@ -180,46 +189,60 @@ OUTPUT_ARGS=(
 --save $CHECKPOINT_PATH
 --load ${CHECKPOINT_PATH}/"empty"
 --profile
---profile-step-start=9 # use this to control which iteration to profile : use start iteration -> (end iteration + 1)
---profile-step-end=10
+--profile-step-start=8 # use this to control which iteration to profile : use start iteration -> (end iteration + 1)
+--profile-step-end=9
 )
-
-
 
 PROFILER_ARGS_NCU_SINGLE=(
 # ncu arguements for a single GPU
 --verbose #add more data to profiler output
---set full #profile all sections
---section WorkloadDistribution
---section MemoryWorkloadAnalysis_Chart 
+--filter-mode per-gpu
 --section MemoryWorkloadAnalysis_Tables
---section PmSampling
+--section MemoryWorkloadAnalysis_Chart
+--section SpeedOfLight_HierarchicalTensorRooflineChart
+--section Nvlink
+--section Nvlink_Tables
+--section Nvlink_Topology
+--metric pcie__write_bytes.sum,pcie__read_bytes.sum
+--metric l1tex__m_l1tex2xbar_write_bytes.sum,dram__bytes_write.sum,l1tex__m_xbar2l1tex_read_bytes.sum,dram__bytes_read.sum
+# --metric sm__sass_l1tex_m_xbar2l1tex_read_bytes_mem_global_op_ldgsts_cache_bypass.sum,
+# --metric gpu__time_duration.sum,pcie__write_bytes.sum,pcie__read_bytes.sum,\
+# --metric sm__ops_path_tensor_src_fp16_dst_fp16,sm__ops_path_tensor_src_fp16_dst_fp32
+# --metric lts__t_sectors_srcunit_tex_aperture_sysmem_op_read_lookup_miss.sum
+# --metric lts__t_sectors_srcunit_tex_aperture_sysmem_op_write_lookup_miss.sum,lts__t_sectors_srcunit_tex_aperture_sysmem_op_red_lookup_miss.sum #,\
+# --metric lts__t_sectors_aperture_peer.sum,lts__t_sectors_aperture_peer_op_membar.sum,lts__t_sectors_aperture_peer_op_read.sum,\
+# --metric lts__t_sectors_aperture_peer_op_write.sum,lts__t_sectors_srcunit_l1_aperture_peer.sum,lts__t_sectors_srcunit_ltcfabric_aperture_peer.sum,lts__t_sectors_srcunit_tex_aperture_peer.sum,\
+# --metric l1tex__m_l1tex2xbar_write_bytes.sum,dram__bytes_write.sum
+# --metric l1tex__m_xbar2l1tex_read_bytes.sum 
+# --metric dram__bytes_read.sum
+# --metric lts__t_sectors_srcunit_tex_aperture_peer_op_read_lookup_miss.sum
+# --metric lts__t_sectors_srcunit_tex_aperture_peer_op_red_lookup_miss.sum,lts__t_sectors_srcunit_tex_aperture_peer_op_write_lookup_miss.sum
+#use the ones below for A100/H100
+# --metric lts__t_sectors_srcunit_ltcfabric.sum 
+# --metric sm__sass_l1tex_m_xbar2l1tex_read_bytes_mem_global_op_ldgsts_cache_bypass.sum,gpu__time_duration.sum	 
+--app-replay-match name
 --replay-mode application # use application replay mode (range doesn't work due to unsupported API calls) (app-range doesn't work; don't know why yet)
 --cache-control none
---clock-control none
---nvtx --nvtx-include "iteration9/"
-# --app-replay-match name # Kernels are matched in the following order: 1. (mangled) name, 2. order of execution
-# --app-replay-mode strict #all kernels must match, otherwise throw error
+--range-filter :1:
+# --nvtx --nvtx-include "NCU/"
 -o ${profileOutputs}
 )
 
 PROFILER_ARGS_NCU_MULTI=(
 # ncu arguements for multiple GPUS
---verbose #add more data to profiler output
---nvtx 
-# --set full 
---section WorkloadDistribution
---section MemoryWorkloadAnalysis_Chart 
---section MemoryWorkloadAnalysis_Tables
---section PmSampling
---replay-mode application #app-range #application #range
-# --devices 0,1
-# --filter-mode per-gpu
-# --target-processes application-only
+--verbose
+--launch-skip `expr $LAUNCH_COUNT \* $ITERATION_COUNT`
+--launch-count $LAUNCH_COUNT
+--set full
+--section MemoryWorkloadAnalysis_Chart
+--section SpeedOfLight_HierarchicalTensorRooflineChart
+--section Nvlink
+--section Nvlink_Tables
+--section Nvlink_Topology
+--metric pcie__write_bytes.sum,pcie__read_bytes.sum, gpu__time_duration.sum	
+--replay-mode kernel
+--filter-mode per-gpu
 --cache-control none
---clock-control none
-# --kernel-id ::regex:'^(?!ncclKernel)': #profile all kernels except kernel names that start with ncclKernel (Try profiling these with nsys)
-#--nvtx-include "iteration9/"
 --range-filter :1:
 -o ${profileOutputs}
 )
@@ -265,7 +288,7 @@ case $PROFILE_MODE in
 			${TRAINING_ARGS[@]} \
 			${GPT_ARGS_DIST[@]} \
 			${DATA_ARGS[@]} \
-			${OUTPUT_ARGS[@]} #>> ${profileOutputs}_profile_log.txt
+			${OUTPUT_ARGS[@]} >> ${profileOutputs}_profile_log.txt
 		;;
 
 	NCU_SINGLE)
@@ -282,6 +305,8 @@ case $PROFILE_MODE in
 
 	NCU_MULTI)
 		echo ${PROFILER_ARGS_NCU_MULTI[@]}
+		echo --launch-skip `expr $LAUNCH_COUNT \* $ITERATION_COUNT`
+		echo --launch-count ${LAUNCH_COUNT}
 		echo "starting NCU multi gpu profiling"
 		ncu ${PROFILER_ARGS_NCU_MULTI[@]} \
 			torchrun ${DISTRIBUTED_ARGS[@]} ${MEGATRON_PATH}/pretrain_gpt.py \
@@ -289,7 +314,7 @@ case $PROFILE_MODE in
 			${TRAINING_ARGS[@]} \
 			${GPT_ARGS_DIST[@]} \
 			${DATA_ARGS[@]} \
-			${OUTPUT_ARGS[@]} #>> ${profileOutputs}_profile_log.txt
+			${OUTPUT_ARGS[@]} >> ${profileOutputs}_profile_log.txt
 		;;
 	*)
 esac
